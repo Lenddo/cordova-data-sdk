@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
+        id="cordova-plugin-lenddo" version="0.1.0">
+    <name>Lenddo</name>
+    <description>Cordova Lenddo Plugin</description>
+    <license>Apache 2.0</license>
+    <keywords>cordova,lenddo</keywords>
+    <js-module src="www/lenddo.js" name="lenddo">
+        <clobbers target="window.Lenddo" />
+    </js-module>
+    <platform name="android">
+        <config-file target="config.xml" parent="/*">
+            <feature name="Lenddo">
+                <param name="android-package" value="org.apache.cordova.plugin.Lenddo"/>
+            </feature>
+        </config-file>
+        <config-file target="AndroidManifest.xml" parent="/*">
+            <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+        </config-file>
+        <source-file src="src/android/Lenddo.java" target-dir="src/org/apache/cordova/plugin" />
+    </platform>
+    <framework src="lenddodatasdk" custom="true" />
+</plugin>
