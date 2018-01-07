@@ -204,6 +204,9 @@ var Lenddo = /** @class */ (function () {
         this.partnerScriptId = partnerScriptId;
         this.secret = secret;
     }
+    /**
+     * Returns and instance of the Lenddo Service if already set
+     */
     Lenddo.getInstance = function () {
         if (!Lenddo.instance) {
             console.warn("instance not yet initialized");
@@ -211,6 +214,11 @@ var Lenddo = /** @class */ (function () {
         }
         return Lenddo.instance;
     };
+    /**
+     * Assigns a partnerScriptId and secret to the Lenddo Service
+     * @param partnerScriptId
+     * @param secret
+     */
     Lenddo.setInstance = function (partnerScriptId, secret) {
         if (!Lenddo.instance) {
             Lenddo.instance = new Lenddo(partnerScriptId, secret);
@@ -234,7 +242,6 @@ var Lenddo = /** @class */ (function () {
         var resolver = function (resolve, reject) {
             var callback = {
                 success: function (param) {
-                    debugger;
                     if (param.status === 'error') {
                         reject(param.message);
                     }
@@ -249,6 +256,13 @@ var Lenddo = /** @class */ (function () {
             window.Lenddo.setup(self.partnerScriptId, self.secret, callback, options);
         };
         return new Promise(resolver);
+    };
+    /**
+     * Register a callback handler for Data Sending
+     * @param callback The callback object to be called
+     */
+    Lenddo.prototype.setDataSendingCompleteCallback = function (callback) {
+        window.Lenddo.setGlobalDataSendingCallback(callback);
     };
     /**
      * Initialize the Lenddo SDK only if it has not been done before

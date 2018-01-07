@@ -52,6 +52,10 @@ export declare class ApplicationPartnerData {
     application: any;
     verification_data: VerificationData;
 }
+export interface DataSendingCallback {
+    onDataSendingSuccess(result: any): void;
+    onDataSendingError(error: any): void;
+}
 export declare class ClientOptions {
     private wifi_only;
     private theme_color;
@@ -125,13 +129,26 @@ export declare class Lenddo {
      * @param secret Secret
      */
     constructor(partnerScriptId: String, secret: String);
+    /**
+     * Returns and instance of the Lenddo Service if already set
+     */
     static getInstance(): Lenddo;
+    /**
+     * Assigns a partnerScriptId and secret to the Lenddo Service
+     * @param partnerScriptId
+     * @param secret
+     */
     static setInstance(partnerScriptId: String, secret: String): Lenddo;
     /**
      * Initialize the Lenddo Data SDK
      * @param options Various clientoptions to pass
      */
     setup(options: ClientOptions): Promise<any>;
+    /**
+     * Register a callback handler for Data Sending
+     * @param callback The callback object to be called
+     */
+    setDataSendingCompleteCallback(callback: DataSendingCallback): void;
     /**
      * Initialize the Lenddo SDK only if it has not been done before
      * @param options
