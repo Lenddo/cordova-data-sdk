@@ -120,11 +120,9 @@ public class Lenddo extends CordovaPlugin {
                 object.put("value", false);
                 callbackContext.success(object);
             }
-        } else if (action.equals("profile_type")) {
-            callbackContext.success(AndroidData.getProfileType(cordova.getActivity().getApplication()));
         } else if (action.equals("clear")) {
             AndroidData.clear(cordova.getActivity().getApplication());
-            LenddoCoreInfo.initCoreInfo(reactContext);
+            LenddoCoreInfo.initCoreInfo(cordova.getActivity().getApplication());
         } else if (action.equals("send_partner_data")) {
             JSONObject partnerData = args.getJSONObject(0);
             AndroidData.sendPartnerApplicationData(cordova.getActivity(), partnerData.toString(), new OnDataSendingCompleteCallback() {
