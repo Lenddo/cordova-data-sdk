@@ -6,12 +6,13 @@ import android.util.Log;
 import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.CallbackContext;
 
-import com.lenddo.core.LenddoCoreUtils;
-import com.lenddo.data.AndroidData;
-import com.lenddo.data.client.LenddoConstants;
-import com.lenddo.data.listeners.OnDataSendingCompleteCallback;
-import com.lenddo.data.models.ClientOptions;
-import com.lenddo.data.utils.AndroidDataUtils;
+import com.lenddo.mobile.core.LenddoCoreInfo;
+import com.lenddo.mobile.core.LenddoCoreUtils;
+import com.lenddo.mobile.datasdk.AndroidData;
+import com.lenddo.mobile.datasdk.client.LenddoConstants;
+import com.lenddo.mobile.datasdk.listeners.OnDataSendingCompleteCallback;
+import com.lenddo.mobile.datasdk.models.ClientOptions;
+import com.lenddo.mobile.datasdk.utils.AndroidDataUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -119,10 +120,9 @@ public class Lenddo extends CordovaPlugin {
                 object.put("value", false);
                 callbackContext.success(object);
             }
-        } else if (action.equals("profile_type")) {
-            callbackContext.success(AndroidData.getProfileType(cordova.getActivity().getApplication()));
         } else if (action.equals("clear")) {
             AndroidData.clear(cordova.getActivity().getApplication());
+            LenddoCoreInfo.initCoreInfo(cordova.getActivity().getApplication());
         } else if (action.equals("send_partner_data")) {
             JSONObject partnerData = args.getJSONObject(0);
             AndroidData.sendPartnerApplicationData(cordova.getActivity(), partnerData.toString(), new OnDataSendingCompleteCallback() {

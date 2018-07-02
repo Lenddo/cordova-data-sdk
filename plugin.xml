@@ -19,5 +19,5 @@
         </config-file>
         <source-file src="src/android/Lenddo.java" target-dir="src/org/apache/cordova/plugin" />
     </platform>
-    <framework src="lenddodatasdk" custom="true" />
+    <framework src="lenddosdk" custom="true" />
 </plugin>
