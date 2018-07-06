@@ -8,11 +8,16 @@ import org.apache.cordova.CallbackContext;
 
 import com.lenddo.mobile.core.LenddoCoreInfo;
 import com.lenddo.mobile.core.LenddoCoreUtils;
+import com.lenddo.mobile.core.models.GovernmentId;
+import com.lenddo.mobile.core.models.VerificationData;
 import com.lenddo.mobile.datasdk.AndroidData;
 import com.lenddo.mobile.datasdk.client.LenddoConstants;
 import com.lenddo.mobile.datasdk.listeners.OnDataSendingCompleteCallback;
 import com.lenddo.mobile.datasdk.models.ClientOptions;
 import com.lenddo.mobile.datasdk.utils.AndroidDataUtils;
+import com.lenddo.mobile.onboardingsdk.client.LenddoEventListener;
+import com.lenddo.mobile.onboardingsdk.models.FormDataCollector;
+import com.lenddo.mobile.onboardingsdk.utils.UIHelper;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -20,7 +25,7 @@ import org.json.JSONObject;
 
 public class Lenddo extends CordovaPlugin {
     public static final String TAG = Lenddo.class.getName();
-
+    public static UIHelper uiHelper;
     OnDataSendingCompleteCallback providerTokenSendingCompleteCallback = new OnDataSendingCompleteCallback() {
         @Override
         public void onDataSendingSuccess() {
@@ -74,7 +79,7 @@ public class Lenddo extends CordovaPlugin {
             cordova.getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    webView.getEngine().evaluateJavascript("window.Lenddo.registerProviderTokenCallback.error(" + jsonObject.toString() + ")", null);
+                    webView.getEngine().evaluateJavascript("window.Lenddo.registerDataSendingCompletionCallback.error(" + jsonObject.toString() + ")", null);
                 }
             });
         }
@@ -108,6 +113,130 @@ public class Lenddo extends CordovaPlugin {
                 @Override
                 public void run() {
                     AndroidData.startAndroidData(cordova.getActivity(), applicationId);
+                }
+            });
+
+        }  else if (action.equals("startOnboarding")) {
+            JSONObject formDataObject = args.getJSONObject(0);
+            Log.d(TAG, "formDataObject = " + formDataObject);
+            final FormDataCollector formDataCollector = buildFormDataCollector(formDataObject, callbackContext);
+
+            LenddoEventListener lenddoEventListener = new LenddoEventListener() {
+                @Override
+                public boolean onButtonClicked(FormDataCollector collector) {
+                    collector.setApplicationId(formDataCollector.getApplicationId());
+                    collector.setPartnerScriptId(formDataCollector.getPartnerScriptId());
+
+                    return true;
+                }
+
+                @Override
+                public void onAuthorizeStarted(FormDataCollector collector) {
+                    final JSONObject jsonObject = new JSONObject();
+                    try {
+                        jsonObject.put("callback", "onboarding_completion_callback");
+                        jsonObject.put("status", "started");
+                        jsonObject.put("code", 200);
+                        jsonObject.put("message", "Onboarding has started");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    cordova.getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            webView.getEngine().evaluateJavascript("window.Lenddo.registerOnboardingCompletionCallback.success(" + jsonObject.toString() + ")", null);
+                        }
+                    });
+                }
+
+                @Override
+                public void onAuthorizeComplete(FormDataCollector collector) {
+                    final JSONObject jsonObject = new JSONObject();
+                    try {
+                        jsonObject.put("callback", "onboarding_completion_callback");
+                        jsonObject.put("status", "complete");
+                        jsonObject.put("code", 200);
+                        jsonObject.put("message", "Onboarding is complete");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    cordova.getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            webView.getEngine().evaluateJavascript("window.Lenddo.registerOnboardingCompletionCallback.success(" + jsonObject.toString() + ")", null);
+                        }
+                    });
+                }
+
+                @Override
+                public void onAuthorizeCanceled(FormDataCollector collector) {
+                    final JSONObject jsonObject = new JSONObject();
+                    try {
+                        jsonObject.put("callback", "onboarding_completion_callback");
+                        jsonObject.put("status", "cancelled");
+                        jsonObject.put("code", 300);
+                        jsonObject.put("message", "Onboarding is cancelled");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    cordova.getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            webView.getEngine().evaluateJavascript("window.Lenddo.registerOnboardingCompletionCallback.error(" + jsonObject.toString() + ")", null);
+
+                        }
+                    });
+                }
+
+                @Override
+                public void onAuthorizeError(int statusCode, String rawResponse) {
+                    final JSONObject jsonObject = new JSONObject();
+                    try {
+                        jsonObject.put("callback", "onboarding_completion_callback");
+                        jsonObject.put("status", "error");
+                        jsonObject.put("code", statusCode);
+                        jsonObject.put("message", rawResponse);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    cordova.getActivity().runOnUiThread(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            webView.getEngine().evaluateJavascript("window.Lenddo.registerOnboardingCompletionCallback.error(" + jsonObject.toString() + ")", null);
+
+                        }
+                    });
+                }
+
+                @Override
+                public void onAuthorizeFailure(Throwable throwable) {
+                    final JSONObject jsonObject = new JSONObject();
+                    try {
+                        jsonObject.put("callback", "onboarding_completion_callback");
+                        jsonObject.put("status", "failure");
+                        jsonObject.put("code", 400);
+                        jsonObject.put("message", throwable.getMessage());
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    cordova.getActivity().runOnUiThread(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            webView.getEngine().evaluateJavascript("window.Lenddo.registerOnboardingCompletionCallback.error(" + jsonObject.toString() + ")", null);
+
+                        }
+                    });
+                }
+            };
+
+            uiHelper = new UIHelper(cordova.getActivity(), lenddoEventListener);
+            cordova.getActivity().runOnUiThread(new Runnable() {
+
+                @Override
+                public void run() {
+                    UIHelper.showAuthorize(cordova.getActivity(), uiHelper);
                 }
             });
 
@@ -428,5 +557,111 @@ public class Lenddo extends CordovaPlugin {
         }
 
         return clientOptions;
+    }
+
+    @NonNull
+    private FormDataCollector buildFormDataCollector(JSONObject optionsObject, final CallbackContext callbackContext) {
+        final FormDataCollector formDataCollector = new FormDataCollector();
+        String applicationId = optionsObject.optString("applicationId");
+        Log.d(TAG, "optionsObject = " + optionsObject);
+
+        if (!applicationId.isEmpty()) {
+            formDataCollector.setApplicationId(applicationId);
+        }
+        String partnerScriptId = optionsObject.optString("partnerScriptId");
+        if (!partnerScriptId.isEmpty()) {
+            formDataCollector.setPartnerScriptId(partnerScriptId);
+        }
+        JSONObject verificationDataJsonObject = optionsObject.optJSONObject("verification_data");
+        if (verificationDataJsonObject != null && verificationDataJsonObject.length() > 0) {
+            VerificationData verification_data = new VerificationData();
+
+            JSONObject nameJsonObject = verificationDataJsonObject.optJSONObject("name");
+            if (nameJsonObject != null && nameJsonObject.length() > 0) {
+                String first = nameJsonObject.optString("first", "");
+                String middle = nameJsonObject.optString("middle", "");
+                String last = nameJsonObject.optString("last", "");
+
+                verification_data.name.first = first;
+                verification_data.name.last = last;
+                verification_data.name.middle = middle;
+            }
+            formDataCollector.setFirstName(verification_data.name.first);
+            formDataCollector.setLastName(verification_data.name.last);
+            formDataCollector.setMiddleName(verification_data.name.middle);
+
+            JSONObject phoneJsonObject = verificationDataJsonObject.optJSONObject("phone");
+            if (phoneJsonObject != null && phoneJsonObject.length() > 0) {
+                String mobile = phoneJsonObject.optString("mobile", "");
+                String home = phoneJsonObject.optString("home", "");
+
+                verification_data.phone.mobile = mobile;
+                verification_data.phone.home = home;
+            }
+            formDataCollector.setMobilePhone(verification_data.phone.mobile);
+            formDataCollector.setHomePhone(verification_data.phone.home);
+
+            JSONObject employmentPeriodJsonObject = verificationDataJsonObject.optJSONObject("employment_period");
+            if (employmentPeriodJsonObject != null && employmentPeriodJsonObject.length() > 0) {
+                String start_date = employmentPeriodJsonObject.optString("start_date", "");
+                String end_date = employmentPeriodJsonObject.optString("end_date", "");
+
+                verification_data.employment_period.start_date = start_date;
+                verification_data.employment_period.end_date = end_date;
+            }
+            formDataCollector.setStartEmploymentDate(verification_data.employment_period.start_date);
+            formDataCollector.setEndEmploymentDate(verification_data.employment_period.end_date);
+
+            JSONObject mothersMaidenNameJsonObject = verificationDataJsonObject.optJSONObject("mothers_maiden_name");
+            if (mothersMaidenNameJsonObject != null && mothersMaidenNameJsonObject.length() > 0) {
+                String first = mothersMaidenNameJsonObject.optString("first", "");
+                String middle = mothersMaidenNameJsonObject.optString("middle", "");
+                String last = mothersMaidenNameJsonObject.optString("last", "");
+
+                verification_data.mothers_maiden_name.first = first;
+                verification_data.mothers_maiden_name.last = last;
+                verification_data.mothers_maiden_name.middle = middle;
+            }
+
+            JSONObject addressJsonObject = verificationDataJsonObject.optJSONObject("address");
+            if (addressJsonObject != null && addressJsonObject.length() > 0) {
+                String line_1 = addressJsonObject.optString("line_1", "");
+                String line_2 = addressJsonObject.optString("line_2", "");
+                String city = addressJsonObject.optString("city", "");
+                String administrative_division = addressJsonObject.optString("administrative_division", "");
+                String country_code = addressJsonObject.optString("country_code", "");
+                String postal_code = addressJsonObject.optString("postal_code", "");
+                double latitude = addressJsonObject.optDouble("latitude", 0);
+                double longitude = addressJsonObject.optDouble("longitude", 0);
+
+                verification_data.address.line_1 = line_1;
+                verification_data.address.line_2 = line_2;
+                verification_data.address.city = city;
+                verification_data.address.administrative_division = administrative_division;
+                verification_data.address.country_code = country_code;
+                verification_data.address.postal_code = postal_code;
+                verification_data.address.latitude = latitude;
+                verification_data.address.longitude = longitude;
+            }
+            formDataCollector.setAddress(verification_data.address);
+
+            JSONArray governmentIdsJsonArray = verificationDataJsonObject.optJSONArray("government_ids");
+            if (governmentIdsJsonArray != null && governmentIdsJsonArray.length() > 0) {
+                for (int i = 0; i < governmentIdsJsonArray.length(); i++) {
+                    JSONObject governmentIdJsonObject = governmentIdsJsonArray.optJSONObject(i);
+
+                    if (governmentIdJsonObject != null && governmentIdJsonObject.length() > 0) {
+                        String type = governmentIdJsonObject.optString("type", "");
+                        String value = governmentIdJsonObject.optString("value", "");
+
+                        GovernmentId governmentId = new GovernmentId(type, value);
+                        verification_data.government_ids.add(governmentId);
+                    }
+                }
+            }
+            formDataCollector.setGovernmentIds(verification_data.government_ids);
+        }
+
+        return formDataCollector;
     }
 }

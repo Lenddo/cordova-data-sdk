@@ -188,6 +188,24 @@ var ClientOptions = /** @class */ (function () {
     return ClientOptions;
 }());
 export { ClientOptions };
+var GovernmentId = /** @class */ (function () {
+    function GovernmentId() {
+    }
+    return GovernmentId;
+}());
+export { GovernmentId };
+var AuthorizationStatus = /** @class */ (function () {
+    function AuthorizationStatus() {
+    }
+    return AuthorizationStatus;
+}());
+export { AuthorizationStatus };
+var FormDataCollector = /** @class */ (function () {
+    function FormDataCollector() {
+    }
+    return FormDataCollector;
+}());
+export { FormDataCollector };
 var InstallationInformation = /** @class */ (function () {
     function InstallationInformation() {
     }
@@ -301,6 +319,37 @@ var Lenddo = /** @class */ (function () {
             window.Lenddo.start(applicationId, callback);
         };
         return new Promise(resolver);
+    };
+
+    /**
+     * Start onboarding identified by the formData
+     * @param formData The FormDataCollector to use
+     */
+    Lenddo.prototype.startOnboarding = function (formData) {
+        var resolver = function (resolve, reject) {
+            var callback = {
+                success: function (param) {
+                    if (param.status === 'error') {
+                        reject(param.message);
+                    }
+                    else {
+                        resolve(param);
+                    }
+                },
+                error: function (message) {
+                    reject(message);
+                }
+            };
+            window.Lenddo.startOnboarding(formData, callback);
+        };
+        return new Promise(resolver);
+    };
+    /**
+     * Register a callback handler for Onboarding
+     * @param callback The callback object to be called
+     */
+    Lenddo.prototype.setOnboardingCompleteCallback = function (callback) {
+        window.Lenddo.setGlobalOnboardingCallback(callback);
     };
     /**
      * Submit partner data

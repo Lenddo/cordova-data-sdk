@@ -60,10 +60,12 @@ export class VerificationData {
     public employer: String;
     public university: String;
     public email: String;
+    public work_email: String;
     public phone: VerificationDataPhone;
     public address: VerificationAddress;
     public mothers_maiden_name: VerificationDataName;
     public employment_period: VerificationEmploymentPeriod;
+    public government_ids: Array<GovernmentId>;
 }
 
 export class ApplicationPartnerData {
@@ -240,6 +242,32 @@ export class ClientOptions {
     }
 }
 
+export declare class GovernmentId {
+    public type: String;
+    public value: String;
+}
+
+export declare class AuthorizationStatus {
+    public client_id: String;
+}
+
+export declare class FormDataCollector {
+    public verification_data: VerificationData;
+    public applicationId: String;
+    public partnerScriptId: String;
+    public authorizationStatus: AuthorizationStatus
+    public fields: any;
+    public applicationFormData: any;
+    public birthDay: Number;
+    public birthMonth: Number;
+    public birthYear: Number;
+}
+
+export interface OnboardingCallback {
+    onOnboardingSuccess(result : any) : void;
+    onOnboardingError(error : any) : void;
+}
+
 export class InstallationInformation {
     public applicationId: String;
     public serviceToken: String;
@@ -363,6 +391,38 @@ export class Lenddo {
             window.Lenddo.start(applicationId, callback);
         }
         return new Promise<any>(resolver);
+    }
+
+    /**
+     * Start onboarding identified by the formData
+     * @param formData The FormDataCollector to use
+     */
+    startOnboarding(formData: FormDataCollector): Promise<any> {
+        let resolver = function (resolve: Function, reject: Function) {
+            let callback = {
+                success: function (param: any) {
+                    if (param.status === 'error') {
+                        reject(param.message);
+                    } else {
+                        resolve(param);
+                    }
+                },
+
+                error: function (message: any) {
+                    reject(message);
+                }
+            }
+            window.Lenddo.startOnboarding(formData, callback);
+        }
+        return new Promise<any>(resolver);
+    }
+
+    /**
+     * Register a callback handler for Onboarding
+     * @param callback The callback object to be called
+     */
+    setOnboardingCompleteCallback(callback : OnboardingCallback) {
+        window.Lenddo.setGlobalOnboardingCallback(callback);
     }
 
     /**

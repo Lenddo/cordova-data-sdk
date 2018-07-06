@@ -42,10 +42,12 @@ export declare class VerificationData {
     employer: String;
     university: String;
     email: String;
+    work_email: String;
     phone: VerificationDataPhone;
     address: VerificationAddress;
     mothers_maiden_name: VerificationDataName;
     employment_period: VerificationEmploymentPeriod;
+    government_ids: Array<GovernmentId>;
 }
 export declare class ApplicationPartnerData {
     reference_number: String;
@@ -113,6 +115,28 @@ export declare class ClientOptions {
     setEnableContactsEmailHashing(value: Boolean): void;
     setEnableContactsNameHashing(value: Boolean): void;
 }
+export declare class GovernmentId {
+    type: String;
+    value: String;
+}
+export declare class AuthorizationStatus {
+    client_id: String;
+}
+export declare class FormDataCollector {
+    verification_data: VerificationData;
+    applicationId: String;
+    partnerScriptId: String;
+    authorizationStatus: AuthorizationStatus
+    fields: any;
+    applicationFormData: any;
+    birthDay: Number;
+    birthMonth: Number;
+    birthYear: Number;
+}
+export interface OnboardingCallback {
+    onOnboardingSuccess(result : any) : void;
+    onOnboardingError(error : any) : void;
+}
 export declare class InstallationInformation {
     applicationId: String;
     serviceToken: String;
@@ -159,6 +183,16 @@ export declare class Lenddo {
      * @param applicationId The application ID to use
      */
     start(applicationId: String): Promise<any>;
+    /**
+     * Start onboarding identified by the formData
+     * @param formData the FormDataCollector to be use
+     */
+    startOnboarding(formData: FormDataCollector): Promise<any>;
+    /**
+     * Register a callback handler for Onboarding
+     * @param callback The callback object to be called
+     */
+    setOnboardingCompleteCallback(callback: OnboardingCallback): void;
     /**
      * Submit partner data
      * @param partnerData The partner data

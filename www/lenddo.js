@@ -35,6 +35,29 @@ var Lenddo = {
       "start",
       [applicationId]);
   },
+  startOnboarding: function (formData, callback) {
+    Lenddo.registerOnboardingCompletionCallbackLocal = callback;
+    exec(function (winParam) { },
+      function (error) { },
+      "Lenddo",
+      "startOnboarding",
+      [formData]);
+  },
+  setGlobalOnboardingCallback: function(callback) {
+    Lenddo.registerOnboardingCompletionCallbackGlobal = {
+        success: function (param) {
+            if (param.status === 'error' || param.status === 'failure') {
+                callback.onOnboardingError(param.message)
+            }
+            else {
+                callback.onOnboardingSuccess(param);
+            }
+        },
+        error: function (message) {
+            callback.onOnboardingError(message);
+        }
+    };
+  },
   clear: function () {
     exec(function (winParam) { },
       function (error) { },
@@ -120,6 +143,24 @@ var Lenddo = {
     error: function(error) {}
   },
   registerDataSendingCompletionCallbackLocal: {
+    success: function(result) {},
+    error: function(error) {}
+  },
+  registerOnboardingCompletionCallback: {
+    success: function(result) {
+        Lenddo.registerOnboardingCompletionCallbackGlobal.success(result);
+        return Lenddo.registerOnboardingCompletionCallbackLocal.success(result);
+    },
+    error: function(error) {
+        Lenddo.registerOnboardingCompletionCallbackGlobal.error(error);
+        return Lenddo.registerOnboardingCompletionCallbackLocal.error(error);
+    }
+  },
+  registerOnboardingCompletionCallbackLocal: {
+    success: function(result) {},
+    error: function(error) {}
+  },
+  registerOnboardingCompletionCallbackGlobal: {
     success: function(result) {},
     error: function(error) {}
   }
