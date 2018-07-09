@@ -231,7 +231,39 @@ public class Lenddo extends CordovaPlugin {
                 }
             };
 
+            String title = "Confirm";
+            String message = "Are you sure you want to cancel?";
+            String okButton = "YES";
+            String cancelButton = "NO";
+
+            JSONObject cancelDialogTextJsonObject = formDataObject.optJSONObject("cancelDialogText");
+            if (cancelDialogTextJsonObject != null && cancelDialogTextJsonObject.length() > 0) {
+                String titleObj = cancelDialogTextJsonObject.optString("title");
+                if (!titleObj.isEmpty()) {
+                    title = titleObj;
+                }
+                String messageObj = cancelDialogTextJsonObject.optString("message");
+                if (!messageObj.isEmpty()) {
+                    message = messageObj;
+                }
+                String okButtonObj = cancelDialogTextJsonObject.optString("okButton");
+                if (!okButtonObj.isEmpty()) {
+                    okButton = okButtonObj;
+                }
+                String cancelButtonObj = cancelDialogTextJsonObject.optString("cancelButton");
+                if (!cancelButtonObj.isEmpty()) {
+                    cancelButton = cancelButtonObj;
+                }
+            }
+
+            String apiRegion = formDataObject.optString("apiRegion");
+            if (!apiRegion.isEmpty() && apiRegion.length() < 3) {
+                UIHelper.setApiRegion(apiRegion);
+            }
+
             uiHelper = new UIHelper(cordova.getActivity(), lenddoEventListener);
+            uiHelper.customizeBackPopup(title, message, okButton, cancelButton);
+
             cordova.getActivity().runOnUiThread(new Runnable() {
 
                 @Override
@@ -660,6 +692,31 @@ public class Lenddo extends CordovaPlugin {
                 }
             }
             formDataCollector.setGovernmentIds(verification_data.government_ids);
+        }
+
+        JSONObject fieldsDataJsonObject = optionsObject.optJSONObject("fields");
+        if (fieldsDataJsonObject != null && fieldsDataJsonObject.length() > 0) {
+            Iterator<?> keys = fieldsDataJsonObject.keys();
+            while(keys.hasNext()) {
+                String key = (String) keys.next();
+                String values = fieldsDataJsonObject.optString(key);
+                formDataCollector.putField(key, values);
+            }
+        }
+
+        String birthDay = optionsObject.optInt("birthDay");
+        if (!birthDay.isEmpty()) {
+            formDataCollector.setBirthDay(birthDay);
+        }
+
+        String birthMonth = optionsObject.optInt("birthMonth");
+        if (!birthMonth.isEmpty()) {
+            formDataCollector.setBirthMonth(birthMonth);
+        }
+
+        String birthYear = optionsObject.optInt("birthYear");
+        if (!birthYear.isEmpty()) {
+            formDataCollector.setBirthYear(birthYear);
         }
 
         return formDataCollector;

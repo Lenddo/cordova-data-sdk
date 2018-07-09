@@ -242,6 +242,13 @@ export class ClientOptions {
     }
 }
 
+export declare class CancelDialogText {
+    public title: String;
+    public message: String;
+    public okButton: String;
+    public cancelButton: String;
+}
+
 export declare class GovernmentId {
     public type: String;
     public value: String;
@@ -255,12 +262,14 @@ export declare class FormDataCollector {
     public verification_data: VerificationData;
     public applicationId: String;
     public partnerScriptId: String;
-    public authorizationStatus: AuthorizationStatus
+    public authorizationStatus: AuthorizationStatus;
     public fields: any;
     public applicationFormData: any;
     public birthDay: Number;
     public birthMonth: Number;
     public birthYear: Number;
+    public cancelDialogText: CancelDialogText;
+    public apiRegion: String;
 }
 
 export interface OnboardingCallback {

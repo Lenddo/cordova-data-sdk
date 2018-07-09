@@ -115,6 +115,12 @@ export declare class ClientOptions {
     setEnableContactsEmailHashing(value: Boolean): void;
     setEnableContactsNameHashing(value: Boolean): void;
 }
+export declare class CancelDialogText {
+    title: String;
+    message: String;
+    okButton: String;
+    cancelButton: String;
+}
 export declare class GovernmentId {
     type: String;
     value: String;
@@ -126,12 +132,14 @@ export declare class FormDataCollector {
     verification_data: VerificationData;
     applicationId: String;
     partnerScriptId: String;
-    authorizationStatus: AuthorizationStatus
+    authorizationStatus: AuthorizationStatus;
     fields: any;
     applicationFormData: any;
     birthDay: Number;
     birthMonth: Number;
     birthYear: Number;
+    cancelDialogText: CancelDialogText;
+    apiRegion: String;
 }
 export interface OnboardingCallback {
     onOnboardingSuccess(result : any) : void;

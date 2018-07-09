@@ -188,6 +188,12 @@ var ClientOptions = /** @class */ (function () {
     return ClientOptions;
 }());
 export { ClientOptions };
+var CancelDialogText = /** @class */ (function () {
+    function CancelDialogText() {
+    }
+    return CancelDialogText;
+}());
+export { CancelDialogText };
 var GovernmentId = /** @class */ (function () {
     function GovernmentId() {
     }
