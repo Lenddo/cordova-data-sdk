@@ -22,6 +22,7 @@ import com.lenddo.mobile.onboardingsdk.utils.UIHelper;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import java.util.Map;
 
 public class Lenddo extends CordovaPlugin {
     public static final String TAG = Lenddo.class.getName();
@@ -126,6 +127,30 @@ public class Lenddo extends CordovaPlugin {
                 public boolean onButtonClicked(FormDataCollector collector) {
                     collector.setApplicationId(formDataCollector.getApplicationId());
                     collector.setPartnerScriptId(formDataCollector.getPartnerScriptId());
+                    collector.setFirstName(formDataCollector.getFirstName());
+                    collector.setMiddleName(formDataCollector.getMiddleName());
+                    collector.setLastName(formDataCollector.getLastName());
+                    collector.setHomePhone(formDataCollector.getHomePhone());
+                    collector.setMobilePhone(formDataCollector.getMobilePhone());
+                    collector.setEmail(formDataCollector.getEmail());
+                    collector.setWorkEmail(formDataCollector.getWorkEmail());
+                    collector.setEmployerName(formDataCollector.getEmployerName());
+                    collector.setBirthDay(formDataCollector.getBirthDay());
+                    collector.setBirthMonth(formDataCollector.getBirthMonth());
+                    collector.setBirthYear(formDataCollector.getBirthYear());
+                    collector.setStartEmploymentDate(formDataCollector.getStartEmploymentDate());
+                    collector.setEndEmploymentDate(formDataCollector.getEndEmploymentDate());
+                    collector.setUniversityName(formDataCollector.getUniversityName());
+                    collector.setAddress(formDataCollector.getAddress());
+                    collector.setGovernmentIds(formDataCollector.getGovernmentIds());
+
+                    // send custom fields
+                    Map<String, Object> fieldMap = formDataCollector.getFields();
+                    for (Map.Entry<String, Object> entry : fieldMap.entrySet()) {
+                        String key = entry.getKey();
+                        String value = entry.getValue().toString();
+                        collector.putField(key, value);
+                    }
 
                     return true;
                 }
@@ -700,7 +725,9 @@ public class Lenddo extends CordovaPlugin {
             while(keys.hasNext()) {
                 String key = (String) keys.next();
                 String values = fieldsDataJsonObject.optString(key);
-                formDataCollector.putField(key, values);
+                if (!values.isEmpty()) {
+                    formDataCollector.putField(key, values);
+                }
             }
         }
 
