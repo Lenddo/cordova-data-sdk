@@ -22,6 +22,7 @@ import com.lenddo.mobile.onboardingsdk.utils.UIHelper;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import java.util.Iterator;
 import java.util.Map;
 
 public class Lenddo extends CordovaPlugin {
@@ -90,26 +91,31 @@ public class Lenddo extends CordovaPlugin {
     public boolean execute(String action, JSONArray args, final CallbackContext callbackContext) throws JSONException {
         if (action.equals("version")) {
             callbackContext.success(LenddoConstants.DATA_SDK_VERSION);
-        } else if (action.equals("setup")) {
-            final String psid = args.getString(0);
-            final String secret = args.getString(1);
-            JSONObject optionsObject = args.getJSONObject(2);
-
+        } else if (action.equals("setupData")) {
+            JSONObject optionsObject = args.getJSONObject(0);
             final ClientOptions clientOptions = buildClientOptions(optionsObject, callbackContext);
             
             cordova.getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    AndroidData.setup(cordova.getActivity().getApplication(), psid, secret, clientOptions);
+                    AndroidData.setup(cordova.getActivity().getApplication(), clientOptions);
                     callbackContext.success();
                 }
             });
 
+            return true;
+        } else if (action.equals("initialize")) {
+            cordova.getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    LenddoCoreInfo.initCoreInfo(cordova.getActivity().getApplication());
+                }
+            });
 
             return true;
-        } else if (action.equals("start")) {
+        } else if (action.equals("startData")) {
             final String applicationId = args.getString(0);
-            Log.d(TAG, "start " + applicationId);
+            Log.d(TAG, "startData " + applicationId);
             cordova.getThreadPool().execute(new Runnable() {
                 @Override
                 public void run() {
@@ -118,9 +124,9 @@ public class Lenddo extends CordovaPlugin {
             });
 
         }  else if (action.equals("startOnboarding")) {
-            JSONObject formDataObject = args.getJSONObject(0);
-            Log.d(TAG, "formDataObject = " + formDataObject);
-            final FormDataCollector formDataCollector = buildFormDataCollector(formDataObject, callbackContext);
+            JSONObject helperDataObject = args.getJSONObject(0);
+            Log.d(TAG, "helperDataObject = " + helperDataObject);
+            final FormDataCollector formDataCollector = buildFormDataCollector(helperDataObject, callbackContext);
 
             LenddoEventListener lenddoEventListener = new LenddoEventListener() {
                 @Override
@@ -161,7 +167,7 @@ public class Lenddo extends CordovaPlugin {
                     try {
                         jsonObject.put("callback", "onboarding_completion_callback");
                         jsonObject.put("status", "started");
-                        jsonObject.put("code", 200);
+                        jsonObject.put("code", 201);
                         jsonObject.put("message", "Onboarding has started");
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -261,7 +267,7 @@ public class Lenddo extends CordovaPlugin {
             String okButton = "YES";
             String cancelButton = "NO";
 
-            JSONObject cancelDialogTextJsonObject = formDataObject.optJSONObject("cancelDialogText");
+            JSONObject cancelDialogTextJsonObject = helperDataObject.optJSONObject("cancelDialogText");
             if (cancelDialogTextJsonObject != null && cancelDialogTextJsonObject.length() > 0) {
                 String titleObj = cancelDialogTextJsonObject.optString("title");
                 if (!titleObj.isEmpty()) {
@@ -281,7 +287,7 @@ public class Lenddo extends CordovaPlugin {
                 }
             }
 
-            String apiRegion = formDataObject.optString("apiRegion");
+            String apiRegion = helperDataObject.optString("apiRegion");
             if (!apiRegion.isEmpty() && apiRegion.length() < 3) {
                 UIHelper.setApiRegion(apiRegion);
             }
@@ -617,133 +623,145 @@ public class Lenddo extends CordovaPlugin {
     }
 
     @NonNull
-    private FormDataCollector buildFormDataCollector(JSONObject optionsObject, final CallbackContext callbackContext) {
+    private FormDataCollector buildFormDataCollector(JSONObject helperObject, final CallbackContext callbackContext) {
         final FormDataCollector formDataCollector = new FormDataCollector();
-        String applicationId = optionsObject.optString("applicationId");
-        Log.d(TAG, "optionsObject = " + optionsObject);
+        JSONObject formDataJsonObject = helperObject.optJSONObject("formDataCollector");
 
-        if (!applicationId.isEmpty()) {
-            formDataCollector.setApplicationId(applicationId);
-        }
-        String partnerScriptId = optionsObject.optString("partnerScriptId");
-        if (!partnerScriptId.isEmpty()) {
-            formDataCollector.setPartnerScriptId(partnerScriptId);
-        }
-        JSONObject verificationDataJsonObject = optionsObject.optJSONObject("verification_data");
-        if (verificationDataJsonObject != null && verificationDataJsonObject.length() > 0) {
-            VerificationData verification_data = new VerificationData();
-
-            JSONObject nameJsonObject = verificationDataJsonObject.optJSONObject("name");
-            if (nameJsonObject != null && nameJsonObject.length() > 0) {
-                String first = nameJsonObject.optString("first", "");
-                String middle = nameJsonObject.optString("middle", "");
-                String last = nameJsonObject.optString("last", "");
-
-                verification_data.name.first = first;
-                verification_data.name.last = last;
-                verification_data.name.middle = middle;
+        if (formDataJsonObject != null && formDataJsonObject.length() > 0) {
+            String applicationId = formDataJsonObject.optString("applicationId");
+            if (!applicationId.isEmpty()) {
+                formDataCollector.setApplicationId(applicationId);
             }
-            formDataCollector.setFirstName(verification_data.name.first);
-            formDataCollector.setLastName(verification_data.name.last);
-            formDataCollector.setMiddleName(verification_data.name.middle);
-
-            JSONObject phoneJsonObject = verificationDataJsonObject.optJSONObject("phone");
-            if (phoneJsonObject != null && phoneJsonObject.length() > 0) {
-                String mobile = phoneJsonObject.optString("mobile", "");
-                String home = phoneJsonObject.optString("home", "");
-
-                verification_data.phone.mobile = mobile;
-                verification_data.phone.home = home;
+            String partnerScriptId = formDataJsonObject.optString("partnerScriptId");
+            if (!partnerScriptId.isEmpty()) {
+                formDataCollector.setPartnerScriptId(partnerScriptId);
             }
-            formDataCollector.setMobilePhone(verification_data.phone.mobile);
-            formDataCollector.setHomePhone(verification_data.phone.home);
+            JSONObject verificationDataJsonObject = formDataJsonObject.optJSONObject("verification_data");
+            if (verificationDataJsonObject != null && verificationDataJsonObject.length() > 0) {
+                VerificationData verification_data = new VerificationData();
 
-            JSONObject employmentPeriodJsonObject = verificationDataJsonObject.optJSONObject("employment_period");
-            if (employmentPeriodJsonObject != null && employmentPeriodJsonObject.length() > 0) {
-                String start_date = employmentPeriodJsonObject.optString("start_date", "");
-                String end_date = employmentPeriodJsonObject.optString("end_date", "");
+                JSONObject nameJsonObject = verificationDataJsonObject.optJSONObject("name");
+                if (nameJsonObject != null && nameJsonObject.length() > 0) {
+                    String first = nameJsonObject.optString("first", "");
+                    String middle = nameJsonObject.optString("middle", "");
+                    String last = nameJsonObject.optString("last", "");
 
-                verification_data.employment_period.start_date = start_date;
-                verification_data.employment_period.end_date = end_date;
+                    verification_data.name.first = first;
+                    verification_data.name.last = last;
+                    verification_data.name.middle = middle;
+                }
+                formDataCollector.setFirstName(verification_data.name.first);
+                formDataCollector.setLastName(verification_data.name.last);
+                formDataCollector.setMiddleName(verification_data.name.middle);
+
+                JSONObject phoneJsonObject = verificationDataJsonObject.optJSONObject("phone");
+                if (phoneJsonObject != null && phoneJsonObject.length() > 0) {
+                    String mobile = phoneJsonObject.optString("mobile", "");
+                    String home = phoneJsonObject.optString("home", "");
+
+                    verification_data.phone.mobile = mobile;
+                    verification_data.phone.home = home;
+                }
+                formDataCollector.setMobilePhone(verification_data.phone.mobile);
+                formDataCollector.setHomePhone(verification_data.phone.home);
+
+                JSONObject employmentPeriodJsonObject = verificationDataJsonObject.optJSONObject("employment_period");
+                if (employmentPeriodJsonObject != null && employmentPeriodJsonObject.length() > 0) {
+                    String start_date = employmentPeriodJsonObject.optString("start_date", "");
+                    String end_date = employmentPeriodJsonObject.optString("end_date", "");
+
+                    verification_data.employment_period.start_date = start_date;
+                    verification_data.employment_period.end_date = end_date;
+                }
+                formDataCollector.setStartEmploymentDate(verification_data.employment_period.start_date);
+                formDataCollector.setEndEmploymentDate(verification_data.employment_period.end_date);
+
+                JSONObject mothersMaidenNameJsonObject = verificationDataJsonObject.optJSONObject("mothers_maiden_name");
+                if (mothersMaidenNameJsonObject != null && mothersMaidenNameJsonObject.length() > 0) {
+                    String first = mothersMaidenNameJsonObject.optString("first", "");
+                    String middle = mothersMaidenNameJsonObject.optString("middle", "");
+                    String last = mothersMaidenNameJsonObject.optString("last", "");
+
+                    verification_data.mothers_maiden_name.first = first;
+                    verification_data.mothers_maiden_name.last = last;
+                    verification_data.mothers_maiden_name.middle = middle;
+                }
+
+                JSONObject addressJsonObject = verificationDataJsonObject.optJSONObject("address");
+                if (addressJsonObject != null && addressJsonObject.length() > 0) {
+                    String line_1 = addressJsonObject.optString("line_1", "");
+                    String line_2 = addressJsonObject.optString("line_2", "");
+                    String city = addressJsonObject.optString("city", "");
+                    String administrative_division = addressJsonObject.optString("administrative_division", "");
+                    String country_code = addressJsonObject.optString("country_code", "");
+                    String postal_code = addressJsonObject.optString("postal_code", "");
+                    double latitude = addressJsonObject.optDouble("latitude", 0);
+                    double longitude = addressJsonObject.optDouble("longitude", 0);
+
+                    verification_data.address.line_1 = line_1;
+                    verification_data.address.line_2 = line_2;
+                    verification_data.address.city = city;
+                    verification_data.address.administrative_division = administrative_division;
+                    verification_data.address.country_code = country_code;
+                    verification_data.address.postal_code = postal_code;
+                    verification_data.address.latitude = latitude;
+                    verification_data.address.longitude = longitude;
+                }
+                formDataCollector.setAddress(verification_data.address);
+
+                JSONArray governmentIdsJsonArray = verificationDataJsonObject.optJSONArray("government_ids");
+                if (governmentIdsJsonArray != null && governmentIdsJsonArray.length() > 0) {
+                    for (int i = 0; i < governmentIdsJsonArray.length(); i++) {
+                        JSONObject governmentIdJsonObject = governmentIdsJsonArray.optJSONObject(i);
+
+                        if (governmentIdJsonObject != null && governmentIdJsonObject.length() > 0) {
+                            String type = governmentIdJsonObject.optString("type", "");
+                            String value = governmentIdJsonObject.optString("value", "");
+
+                            GovernmentId governmentId = new GovernmentId(type, value);
+                            verification_data.government_ids.add(governmentId);
+                        }
+                    }
+                }
+                formDataCollector.setGovernmentIds(verification_data.government_ids);
+
+                String university = verificationDataJsonObject.optString("university");
+                if (!university.isEmpty()) {
+                    formDataCollector.setUniversityName(university);
+                }
+
+                String employer = verificationDataJsonObject.optString("employer");
+                if (!employer.isEmpty()) {
+                    formDataCollector.setEmployerName(employer);
+                }
             }
-            formDataCollector.setStartEmploymentDate(verification_data.employment_period.start_date);
-            formDataCollector.setEndEmploymentDate(verification_data.employment_period.end_date);
 
-            JSONObject mothersMaidenNameJsonObject = verificationDataJsonObject.optJSONObject("mothers_maiden_name");
-            if (mothersMaidenNameJsonObject != null && mothersMaidenNameJsonObject.length() > 0) {
-                String first = mothersMaidenNameJsonObject.optString("first", "");
-                String middle = mothersMaidenNameJsonObject.optString("middle", "");
-                String last = mothersMaidenNameJsonObject.optString("last", "");
-
-                verification_data.mothers_maiden_name.first = first;
-                verification_data.mothers_maiden_name.last = last;
-                verification_data.mothers_maiden_name.middle = middle;
-            }
-
-            JSONObject addressJsonObject = verificationDataJsonObject.optJSONObject("address");
-            if (addressJsonObject != null && addressJsonObject.length() > 0) {
-                String line_1 = addressJsonObject.optString("line_1", "");
-                String line_2 = addressJsonObject.optString("line_2", "");
-                String city = addressJsonObject.optString("city", "");
-                String administrative_division = addressJsonObject.optString("administrative_division", "");
-                String country_code = addressJsonObject.optString("country_code", "");
-                String postal_code = addressJsonObject.optString("postal_code", "");
-                double latitude = addressJsonObject.optDouble("latitude", 0);
-                double longitude = addressJsonObject.optDouble("longitude", 0);
-
-                verification_data.address.line_1 = line_1;
-                verification_data.address.line_2 = line_2;
-                verification_data.address.city = city;
-                verification_data.address.administrative_division = administrative_division;
-                verification_data.address.country_code = country_code;
-                verification_data.address.postal_code = postal_code;
-                verification_data.address.latitude = latitude;
-                verification_data.address.longitude = longitude;
-            }
-            formDataCollector.setAddress(verification_data.address);
-
-            JSONArray governmentIdsJsonArray = verificationDataJsonObject.optJSONArray("government_ids");
-            if (governmentIdsJsonArray != null && governmentIdsJsonArray.length() > 0) {
-                for (int i = 0; i < governmentIdsJsonArray.length(); i++) {
-                    JSONObject governmentIdJsonObject = governmentIdsJsonArray.optJSONObject(i);
-
-                    if (governmentIdJsonObject != null && governmentIdJsonObject.length() > 0) {
-                        String type = governmentIdJsonObject.optString("type", "");
-                        String value = governmentIdJsonObject.optString("value", "");
-
-                        GovernmentId governmentId = new GovernmentId(type, value);
-                        verification_data.government_ids.add(governmentId);
+            JSONObject fieldsDataJsonObject = formDataJsonObject.optJSONObject("fields");
+            if (fieldsDataJsonObject != null && fieldsDataJsonObject.length() > 0) {
+                Iterator<?> keys = fieldsDataJsonObject.keys();
+                while(keys.hasNext()) {
+                    String key = (String) keys.next();
+                    String values = fieldsDataJsonObject.optString(key);
+                    if (!values.isEmpty()) {
+                        formDataCollector.putField(key, values);
                     }
                 }
             }
-            formDataCollector.setGovernmentIds(verification_data.government_ids);
-        }
 
-        JSONObject fieldsDataJsonObject = optionsObject.optJSONObject("fields");
-        if (fieldsDataJsonObject != null && fieldsDataJsonObject.length() > 0) {
-            Iterator<?> keys = fieldsDataJsonObject.keys();
-            while(keys.hasNext()) {
-                String key = (String) keys.next();
-                String values = fieldsDataJsonObject.optString(key);
-                if (!values.isEmpty()) {
-                    formDataCollector.putField(key, values);
-                }
+            int birthDay = formDataJsonObject.optInt("birthDay", 0);
+            if (birthDay != 0) {
+                formDataCollector.setBirthDay(birthDay);
             }
-        }
 
-        String birthDay = optionsObject.optInt("birthDay");
-        if (!birthDay.isEmpty()) {
-            formDataCollector.setBirthDay(birthDay);
-        }
+            int birthMonth = formDataJsonObject.optInt("birthMonth", 0);
+            if (birthMonth != 0) {
+                formDataCollector.setBirthMonth(birthMonth);
+            }
 
-        String birthMonth = optionsObject.optInt("birthMonth");
-        if (!birthMonth.isEmpty()) {
-            formDataCollector.setBirthMonth(birthMonth);
-        }
-
-        String birthYear = optionsObject.optInt("birthYear");
-        if (!birthYear.isEmpty()) {
-            formDataCollector.setBirthYear(birthYear);
+            int birthYear = formDataJsonObject.optInt("birthYear", 0);
+            if (birthYear != 0) {
+                formDataCollector.setBirthYear(birthYear);
+            }
         }
 
         return formDataCollector;

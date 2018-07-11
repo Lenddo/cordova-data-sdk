@@ -1,7 +1,14 @@
 var exec = require('cordova/exec');
 
 var Lenddo = {
-  setup: function (partnerScriptId, applicationSecret, callback, options) {
+  initialize: function () {
+    exec(function (winParam) { },
+      function (error) { },
+      "Lenddo",
+      "initialize",
+      []);
+  },
+  setupData: function (callback, options) {
     exec(function (winParam) { 
         callback.success(winParam);
       },
@@ -9,8 +16,8 @@ var Lenddo = {
         callback.error(error);
       },
       "Lenddo",
-      "setup",
-      [partnerScriptId, applicationSecret, options]);
+      "setupData",
+      [options]);
   },
   setGlobalDataSendingCallback: function(callback) {
     Lenddo.registerDataSendingCompletionCallbackGlobal = {
@@ -27,21 +34,21 @@ var Lenddo = {
       }
     };
   },
-  start: function (applicationId, callback) {
+  startData: function (applicationId, callback) {
     Lenddo.registerDataSendingCompletionCallbackLocal = callback;
     exec(function (winParam) { },
       function (error) { },
       "Lenddo",
-      "start",
+      "startData",
       [applicationId]);
   },
-  startOnboarding: function (formData, callback) {
+  startOnboarding: function (helper, callback) {
     Lenddo.registerOnboardingCompletionCallbackLocal = callback;
     exec(function (winParam) { },
       function (error) { },
       "Lenddo",
       "startOnboarding",
-      [formData]);
+      [helper]);
   },
   setGlobalOnboardingCallback: function(callback) {
     Lenddo.registerOnboardingCompletionCallbackGlobal = {

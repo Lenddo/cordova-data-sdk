@@ -212,6 +212,12 @@ var FormDataCollector = /** @class */ (function () {
     return FormDataCollector;
 }());
 export { FormDataCollector };
+var OnboardingHelper = /** @class */ (function () {
+    function OnboardingHelper() {
+    }
+    return OnboardingHelper;
+}());
+export { OnboardingHelper };
 var InstallationInformation = /** @class */ (function () {
     function InstallationInformation() {
     }
@@ -221,12 +227,9 @@ export { InstallationInformation };
 var Lenddo = /** @class */ (function () {
     /**
      *
-     * @param partnerScriptId PartnerScript Id
-     * @param secret Secret
      */
-    function Lenddo(partnerScriptId, secret) {
-        this.partnerScriptId = partnerScriptId;
-        this.secret = secret;
+    function Lenddo() {
+
     }
     /**
      * Returns and instance of the Lenddo Service if already set
@@ -234,35 +237,24 @@ var Lenddo = /** @class */ (function () {
     Lenddo.getInstance = function () {
         if (!Lenddo.instance) {
             console.warn("instance not yet initialized");
-            Lenddo.instance = new Lenddo('', '');
+            Lenddo.initialize();
         }
         return Lenddo.instance;
     };
     /**
-     * Assigns a partnerScriptId and secret to the Lenddo Service
-     * @param partnerScriptId
-     * @param secret
+     * Initialize Lenddo class wrapper
      */
-    Lenddo.setInstance = function (partnerScriptId, secret) {
+    Lenddo.initialize = function () {
         if (!Lenddo.instance) {
-            Lenddo.instance = new Lenddo(partnerScriptId, secret);
+            console.warn("Initialize Lenddo class wrapper");
+            Lenddo.instance = new Lenddo();
         }
-        else {
-            Lenddo.instance.partnerScriptId = partnerScriptId;
-            Lenddo.instance.secret = secret;
-        }
-        return Lenddo.instance;
     };
     /**
-     * Initialize the Lenddo Data SDK
+     * Setup the Lenddo Data SDK
      * @param options Various clientoptions to pass
      */
-    Lenddo.prototype.setup = function (options) {
-        var self = this;
-        if (self.partnerScriptId === '' || self.secret === '') {
-            console.log("partnerScriptid or secret is empty");
-            return Promise.reject({ status: 'error', code: 1, message: "partnerScriptid or secret is empty" });
-        }
+    Lenddo.prototype.setupData = function (options) {
         var resolver = function (resolve, reject) {
             var callback = {
                 success: function (param) {
@@ -277,7 +269,7 @@ var Lenddo = /** @class */ (function () {
                     reject(message);
                 }
             };
-            window.Lenddo.setup(self.partnerScriptId, self.secret, callback, options);
+            window.Lenddo.setupData(callback, options);
         };
         return new Promise(resolver);
     };
@@ -292,11 +284,11 @@ var Lenddo = /** @class */ (function () {
      * Initialize the Lenddo SDK only if it has not been done before
      * @param options
      */
-    Lenddo.prototype.setupIfNeeded = function (options) {
+    Lenddo.prototype.setupDataIfNeeded = function (options) {
         var _this = this;
         return this.hasStatistics().then(function (result) {
             if (result) {
-                return _this.setup(options);
+                return _this.setupData(options);
             }
             else {
                 return Promise.resolve(true);
@@ -307,7 +299,7 @@ var Lenddo = /** @class */ (function () {
      * Start data collection identified by the application ID
      * @param applicationId The application ID to use
      */
-    Lenddo.prototype.start = function (applicationId) {
+    Lenddo.prototype.startData = function (applicationId) {
         var resolver = function (resolve, reject) {
             var callback = {
                 success: function (param) {
@@ -322,16 +314,16 @@ var Lenddo = /** @class */ (function () {
                     reject(message);
                 }
             };
-            window.Lenddo.start(applicationId, callback);
+            window.Lenddo.startData(applicationId, callback);
         };
         return new Promise(resolver);
     };
 
     /**
-     * Start onboarding identified by the formData
-     * @param formData The FormDataCollector to use
+     * Start onboarding identified by the helper
+     * @param helper The OnboardingHelper to use
      */
-    Lenddo.prototype.startOnboarding = function (formData) {
+    Lenddo.prototype.startOnboarding = function (helper) {
         var resolver = function (resolve, reject) {
             var callback = {
                 success: function (param) {
@@ -346,7 +338,7 @@ var Lenddo = /** @class */ (function () {
                     reject(message);
                 }
             };
-            window.Lenddo.startOnboarding(formData, callback);
+            window.Lenddo.startOnboarding(helper, callback);
         };
         return new Promise(resolver);
     };
