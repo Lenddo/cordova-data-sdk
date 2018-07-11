@@ -654,6 +654,12 @@ public class Lenddo extends CordovaPlugin {
                 formDataCollector.setLastName(verification_data.name.last);
                 formDataCollector.setMiddleName(verification_data.name.middle);
 
+                String dateOfBirth = verificationDataJsonObject.optString("date_of_birth");
+                if (!dateOfBirth.isEmpty()) {
+                    dateOfBirth = dateOfBirth.replace("\\\\","");
+                    formDataCollector.setDateOfBirth(dateOfBirth);
+                }
+
                 JSONObject phoneJsonObject = verificationDataJsonObject.optJSONObject("phone");
                 if (phoneJsonObject != null && phoneJsonObject.length() > 0) {
                     String mobile = phoneJsonObject.optString("mobile", "");
@@ -670,8 +676,13 @@ public class Lenddo extends CordovaPlugin {
                     String start_date = employmentPeriodJsonObject.optString("start_date", "");
                     String end_date = employmentPeriodJsonObject.optString("end_date", "");
 
-                    verification_data.employment_period.start_date = start_date;
-                    verification_data.employment_period.end_date = end_date;
+                    if (!start_date.isEmpty()) {
+                        verification_data.employment_period.start_date = start_date;
+                    }
+
+                    if (!end_date.isEmpty()) {
+                        verification_data.employment_period.end_date = end_date;
+                    }
                 }
                 formDataCollector.setStartEmploymentDate(verification_data.employment_period.start_date);
                 formDataCollector.setEndEmploymentDate(verification_data.employment_period.end_date);
@@ -695,8 +706,8 @@ public class Lenddo extends CordovaPlugin {
                     String administrative_division = addressJsonObject.optString("administrative_division", "");
                     String country_code = addressJsonObject.optString("country_code", "");
                     String postal_code = addressJsonObject.optString("postal_code", "");
-                    double latitude = addressJsonObject.optDouble("latitude", 0);
-                    double longitude = addressJsonObject.optDouble("longitude", 0);
+                    String latitudeString = addressJsonObject.optString("latitude", "0");
+                    String longitudeString = addressJsonObject.optString("longitude", "0");
 
                     verification_data.address.line_1 = line_1;
                     verification_data.address.line_2 = line_2;
@@ -704,8 +715,8 @@ public class Lenddo extends CordovaPlugin {
                     verification_data.address.administrative_division = administrative_division;
                     verification_data.address.country_code = country_code;
                     verification_data.address.postal_code = postal_code;
-                    verification_data.address.latitude = latitude;
-                    verification_data.address.longitude = longitude;
+                    verification_data.address.latitude = Double.parseDouble(latitudeString);
+                    verification_data.address.longitude = Double.parseDouble(longitudeString);
                 }
                 formDataCollector.setAddress(verification_data.address);
 
@@ -733,6 +744,16 @@ public class Lenddo extends CordovaPlugin {
                 String employer = verificationDataJsonObject.optString("employer");
                 if (!employer.isEmpty()) {
                     formDataCollector.setEmployerName(employer);
+                }
+
+                String email = verificationDataJsonObject.optString("email");
+                if (!email.isEmpty()) {
+                    formDataCollector.setEmail(email);
+                }
+
+                String workEmail = verificationDataJsonObject.optString("work_email");
+                if (!workEmail.isEmpty()) {
+                    formDataCollector.setWorkEmail(workEmail);
                 }
             }
 
