@@ -400,6 +400,20 @@ public class MainActivity extends CordovaActivity
 
 ```
 
+Make sure you declare your MainActivity with Theme.AppCompat theme style, as shown on the sample app, using **cordova-custom-cofig** we are able to modify theme attribute of its MainActivity by declaring the *custom-preference* in your **config.xml** file.
+
+```xml
+<widget ... >
+    <platform name="android">
+        // other android platform declaration
+
+       <custom-preference name="android-manifest/application/activity[@android:name='MainActivity']/@android:theme" value="@style/Theme.AppCompat.Light.NoActionBar.FullScreen" />
+
+    </platform>
+</widget>
+```
+
+
 ##### Customizing cancel dialog text
 
 When onboarding procedure started, a default cancel dialog will be displayed when onBackPressed is call (as shown above). You can customize the text to be displayed in this dialog message.
