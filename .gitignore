@@ -47,6 +47,7 @@ captures/
 .idea/markdown-navigator
 .idea/markdown-navigator.xml
 .idea/codeStyles/
+.idea/vcs.xml
 
 # Keystore files
 # Uncomment the following line if you do not want to check your keystore files in.
