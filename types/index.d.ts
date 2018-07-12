@@ -42,10 +42,12 @@ export declare class VerificationData {
     employer: String;
     university: String;
     email: String;
+    work_email: String;
     phone: VerificationDataPhone;
     address: VerificationAddress;
     mothers_maiden_name: VerificationDataName;
     employment_period: VerificationEmploymentPeriod;
+    government_ids: Array<GovernmentId>;
 }
 export declare class ApplicationPartnerData {
     reference_number: String;
@@ -113,6 +115,39 @@ export declare class ClientOptions {
     setEnableContactsEmailHashing(value: Boolean): void;
     setEnableContactsNameHashing(value: Boolean): void;
 }
+export declare class CancelDialogText {
+    title: String;
+    message: String;
+    okButton: String;
+    cancelButton: String;
+}
+export declare class GovernmentId {
+    type: String;
+    value: String;
+}
+export declare class AuthorizationStatus {
+    client_id: String;
+}
+export declare class FormDataCollector {
+    verification_data: VerificationData;
+    applicationId: String;
+    partnerScriptId: String;
+    authorizationStatus: AuthorizationStatus;
+    fields: any;
+    applicationFormData: any;
+    birthDay: Number;
+    birthMonth: Number;
+    birthYear: Number;
+}
+export declare class OnboardingHelper {
+    formDataCollector: FormDataCollector;
+    cancelDialogText: CancelDialogText;
+    apiRegion: String;
+}
+export interface OnboardingCallback {
+    onOnboardingSuccess(result : any) : void;
+    onOnboardingError(error : any) : void;
+}
 export declare class InstallationInformation {
     applicationId: String;
     serviceToken: String;
@@ -120,30 +155,24 @@ export declare class InstallationInformation {
     deviceId: String;
 }
 export declare class Lenddo {
-    partnerScriptId: String;
-    secret: String;
     private static instance;
     /**
      *
-     * @param partnerScriptId PartnerScript Id
-     * @param secret Secret
      */
-    constructor(partnerScriptId: String, secret: String);
+    constructor();
     /**
      * Returns and instance of the Lenddo Service if already set
      */
     static getInstance(): Lenddo;
     /**
-     * Assigns a partnerScriptId and secret to the Lenddo Service
-     * @param partnerScriptId
-     * @param secret
+     * Initialize Lenddo class wrapper
      */
-    static setInstance(partnerScriptId: String, secret: String): Lenddo;
+    static initialize();
     /**
-     * Initialize the Lenddo Data SDK
+     * Setup the Lenddo Data SDK
      * @param options Various clientoptions to pass
      */
-    setup(options: ClientOptions): Promise<any>;
+    setupData(options: ClientOptions): Promise<any>;
     /**
      * Register a callback handler for Data Sending
      * @param callback The callback object to be called
@@ -153,12 +182,22 @@ export declare class Lenddo {
      * Initialize the Lenddo SDK only if it has not been done before
      * @param options
      */
-    setupIfNeeded(options: ClientOptions): Promise<any>;
+    setupDataIfNeeded(options: ClientOptions): Promise<any>;
     /**
      * Start data collection identified by the application ID
      * @param applicationId The application ID to use
      */
-    start(applicationId: String): Promise<any>;
+    startData(applicationId: String): Promise<any>;
+    /**
+     * Start onboarding identified by the formData
+     * @param formData the OnboardingHelper to be use
+     */
+    startOnboarding(helper: OnboardingHelper): Promise<any>;
+    /**
+     * Register a callback handler for Onboarding
+     * @param callback The callback object to be called
+     */
+    setOnboardingCompleteCallback(callback: OnboardingCallback): void;
     /**
      * Submit partner data
      * @param partnerData The partner data

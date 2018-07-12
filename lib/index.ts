@@ -60,10 +60,12 @@ export class VerificationData {
     public employer: String;
     public university: String;
     public email: String;
+    public work_email: String;
     public phone: VerificationDataPhone;
     public address: VerificationAddress;
     public mothers_maiden_name: VerificationDataName;
     public employment_period: VerificationEmploymentPeriod;
+    public government_ids: Array<GovernmentId>;
 }
 
 export class ApplicationPartnerData {
@@ -240,6 +242,45 @@ export class ClientOptions {
     }
 }
 
+export declare class CancelDialogText {
+    public title: String;
+    public message: String;
+    public okButton: String;
+    public cancelButton: String;
+}
+
+export declare class GovernmentId {
+    public type: String;
+    public value: String;
+}
+
+export declare class AuthorizationStatus {
+    public client_id: String;
+}
+
+export declare class FormDataCollector {
+    public verification_data: VerificationData;
+    public applicationId: String;
+    public partnerScriptId: String;
+    public authorizationStatus: AuthorizationStatus;
+    public fields: any;
+    public applicationFormData: any;
+    public birthDay: Number;
+    public birthMonth: Number;
+    public birthYear: Number;
+}
+
+export declare class OnboardingHelper {
+    public formDataCollector: FormDataCollector;
+    public cancelDialogText: CancelDialogText;
+    public apiRegion: String;
+}
+
+export interface OnboardingCallback {
+    onOnboardingSuccess(result : any) : void;
+    onOnboardingError(error : any) : void;
+}
+
 export class InstallationInformation {
     public applicationId: String;
     public serviceToken: String;
@@ -248,18 +289,13 @@ export class InstallationInformation {
 }
 
 export class Lenddo {
-    partnerScriptId: String;
-    secret: String;
     private static instance: Lenddo;
 
     /**
-     * 
-     * @param partnerScriptId PartnerScript Id
-     * @param secret Secret
+     *
      */
-    constructor(partnerScriptId: String, secret: String) {
-        this.partnerScriptId = partnerScriptId;
-        this.secret = secret;
+    constructor() {
+        window.Lenddo.initialize();
     }
 
     /**
@@ -268,37 +304,26 @@ export class Lenddo {
     public static getInstance(): Lenddo {
         if (!Lenddo.instance) {
             console.warn("instance not yet initialized");
-            Lenddo.instance = new Lenddo('', '');
+            Lenddo.initialize();
         }
         return Lenddo.instance;
     }
 
     /**
-     * Assigns a partnerScriptId and secret to the Lenddo Service
-     * @param partnerScriptId 
-     * @param secret 
+     * Initialize Lenddo class wrapper
      */
-    public static setInstance(partnerScriptId: String, secret: String): Lenddo {
+    public static initialize() {
         if (!Lenddo.instance) {
-            Lenddo.instance = new Lenddo(partnerScriptId, secret);
-        } else {
-            Lenddo.instance.partnerScriptId = partnerScriptId;
-            Lenddo.instance.secret = secret;
+            console.warn("Initialized Lenddo wrapper");
+            Lenddo.instance = new Lenddo();
         }
-        return Lenddo.instance;
     }
 
     /**
-     * Initialize the Lenddo Data SDK
+     * Setup the Lenddo Data SDK
      * @param options Various clientoptions to pass
      */
-    setup(options: ClientOptions): Promise<any> {
-        let self = this;
-        if (self.partnerScriptId === '' || self.secret === '') {
-            console.log("partnerScriptid or secret is empty")
-            return Promise.reject({status: 'error', code: 1, message: "partnerScriptid or secret is empty"});
-        }
-
+    setupData(options: ClientOptions): Promise<any> {
         let resolver = function (resolve: Function, reject: Function) {
             let callback = {
                 success: function (param: any) {
@@ -313,7 +338,7 @@ export class Lenddo {
                     reject(message);
                 }
             }
-            window.Lenddo.setup(self.partnerScriptId, self.secret, callback, options)
+            window.Lenddo.setupData(callback, options)
         }
 
         return new Promise<any>(resolver);
@@ -331,10 +356,10 @@ export class Lenddo {
      * Initialize the Lenddo SDK only if it has not been done before
      * @param options 
      */
-    setupIfNeeded(options : ClientOptions) : Promise<any> {
+    setupDataIfNeeded(options : ClientOptions) : Promise<any> {
         return this.hasStatistics().then((result : Boolean) => {
             if (result) {
-                return this.setup(options);
+                return this.setupData(options);
             } else {
                 return Promise.resolve(true);
             }
@@ -345,7 +370,7 @@ export class Lenddo {
      * Start data collection identified by the application ID
      * @param applicationId The application ID to use
      */
-    start(applicationId: String): Promise<any> {
+    startData(applicationId: String): Promise<any> {
         let resolver = function (resolve: Function, reject: Function) {
             let callback = {
                 success: function (param: any) {
@@ -360,9 +385,41 @@ export class Lenddo {
                     reject(message);
                 }
             }
-            window.Lenddo.start(applicationId, callback);
+            window.Lenddo.startData(applicationId, callback);
         }
         return new Promise<any>(resolver);
+    }
+
+    /**
+     * Start onboarding identified by the helper
+     * @param helper The OnboardingHelper to use
+     */
+    startOnboarding(helper: OnboardingHelper): Promise<any> {
+        let resolver = function (resolve: Function, reject: Function) {
+            let callback = {
+                success: function (param: any) {
+                    if (param.status === 'error') {
+                        reject(param.message);
+                    } else {
+                        resolve(param);
+                    }
+                },
+
+                error: function (message: any) {
+                    reject(message);
+                }
+            }
+            window.Lenddo.startOnboarding(helper, callback);
+        }
+        return new Promise<any>(resolver);
+    }
+
+    /**
+     * Register a callback handler for Onboarding
+     * @param callback The callback object to be called
+     */
+    setOnboardingCompleteCallback(callback : OnboardingCallback) {
+        window.Lenddo.setGlobalOnboardingCallback(callback);
     }
 
     /**
