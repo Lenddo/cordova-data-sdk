@@ -11,7 +11,6 @@ import com.lenddo.mobile.core.LenddoCoreUtils;
 import com.lenddo.mobile.core.models.GovernmentId;
 import com.lenddo.mobile.core.models.VerificationData;
 import com.lenddo.mobile.datasdk.AndroidData;
-import com.lenddo.mobile.datasdk.client.LenddoConstants;
 import com.lenddo.mobile.datasdk.listeners.OnDataSendingCompleteCallback;
 import com.lenddo.mobile.datasdk.models.ClientOptions;
 import com.lenddo.mobile.datasdk.utils.AndroidDataUtils;
@@ -90,7 +89,7 @@ public class Lenddo extends CordovaPlugin {
     @Override
     public boolean execute(String action, JSONArray args, final CallbackContext callbackContext) throws JSONException {
         if (action.equals("version")) {
-            callbackContext.success(LenddoConstants.DATA_SDK_VERSION);
+            callbackContext.success(LenddoCoreInfo.DATA_SDK_VERSION);
         } else if (action.equals("setupData")) {
             JSONObject optionsObject = args.getJSONObject(0);
             final ClientOptions clientOptions = buildClientOptions(optionsObject, callbackContext);
@@ -154,8 +153,8 @@ public class Lenddo extends CordovaPlugin {
                     Map<String, Object> fieldMap = formDataCollector.getFields();
                     for (Map.Entry<String, Object> entry : fieldMap.entrySet()) {
                         String key = entry.getKey();
-                        String value = entry.getValue().toString();
-                        collector.putField(key, value);
+                        Object value = entry.getValue();
+                        // collector.putField(key, value);
                     }
 
                     return true;
@@ -287,13 +286,13 @@ public class Lenddo extends CordovaPlugin {
                 }
             }
 
-            String apiRegion = helperDataObject.optString("apiRegion");
-            if (!apiRegion.isEmpty() && apiRegion.length() < 3) {
-                UIHelper.setApiRegion(apiRegion);
-            }
-
             uiHelper = new UIHelper(cordova.getActivity(), lenddoEventListener);
             uiHelper.customizeBackPopup(title, message, okButton, cancelButton);
+
+            String apiRegion = helperDataObject.optString("apiRegion");
+            if (!apiRegion.isEmpty() && apiRegion.length() < 3) {
+                uiHelper.setApiRegion(apiRegion);
+            }
 
             cordova.getActivity().runOnUiThread(new Runnable() {
 
@@ -594,6 +593,38 @@ public class Lenddo extends CordovaPlugin {
             clientOptions.disableLocationDataCollection();
         }
 
+        if (optionsObject.optBoolean("disable_telephony_data")) {
+            clientOptions.disableTelephonyInfoDataCollection();
+        }
+
+        if (optionsObject.optBoolean("disable_stored_files_data")) {
+            clientOptions.disableStoredFilesInformationCollection();
+        }
+
+        if (optionsObject.optBoolean("disable_sensors_data")) {
+            clientOptions.disableSensorsCollection();
+        }
+
+        if (optionsObject.optBoolean("disable_launchers_data")) {
+            clientOptions.disableLauncherAppsCollection();
+        }
+
+        if (optionsObject.optBoolean("disable_wifi_data")) {
+            clientOptions.disableWifiInfoCollection();
+        }
+
+        if (optionsObject.optBoolean("disable_accounts_data")) {
+            clientOptions.disableAccountsInfoCollection();
+        }
+
+        if (optionsObject.optBoolean("disable_bluetooth_data")) {
+            clientOptions.disableBluetoothInfoCollection();
+        }
+
+        if (optionsObject.optBoolean("disable_gmail_labels_data")) {
+            clientOptions.disableGmailLabelsInfoCollection();
+        }
+
         //Hashing
         if (optionsObject.optBoolean("calendar_organizer_hashing")) {
             clientOptions.enableCalendarOrganizerHashing();
@@ -764,7 +795,7 @@ public class Lenddo extends CordovaPlugin {
                     String key = (String) keys.next();
                     String values = fieldsDataJsonObject.optString(key);
                     if (!values.isEmpty()) {
-                        formDataCollector.putField(key, values);
+                        // formDataCollector.putField(key, values);
                     }
                 }
             }
