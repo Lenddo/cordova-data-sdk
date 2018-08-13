@@ -153,8 +153,8 @@ public class Lenddo extends CordovaPlugin {
                     Map<String, Object> fieldMap = formDataCollector.getFields();
                     for (Map.Entry<String, Object> entry : fieldMap.entrySet()) {
                         String key = entry.getKey();
-                        Object value = entry.getValue();
-                        // collector.putField(key, value);
+                        String value = entry.getValue().toString();
+                        collector.putField(key, value);
                     }
 
                     return true;
@@ -795,7 +795,7 @@ public class Lenddo extends CordovaPlugin {
                     String key = (String) keys.next();
                     String values = fieldsDataJsonObject.optString(key);
                     if (!values.isEmpty()) {
-                        // formDataCollector.putField(key, values);
+                        formDataCollector.putField(key, values);
                     }
                 }
             }
