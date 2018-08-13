@@ -63,6 +63,7 @@ export declare class ClientOptions {
     private theme_color;
     private enable_sms;
     private api_gateway_url;
+    private partner_script_id;
     private disable_sms_body;
     private disable_sms_data;
     private disable_batt_charge_data;
@@ -96,6 +97,7 @@ export declare class ClientOptions {
     setEnableSms(enableSms: Boolean): void;
     isSmsEnabled(): Boolean;
     setApiGatewayUrl(api_gateway_url: String): void;
+    setPartnerScriptId(partner_script_id: String): void;
     setCalendarEmailHashing(value: Boolean): void;
     getCalendarEmailHashing(): Boolean;
     setCalendarDisplayNameHashing(value: Boolean): void;

@@ -84,6 +84,7 @@ export class ClientOptions {
     private theme_color: String;
     private enable_sms: Boolean = true;
     private api_gateway_url: String = "";
+    private partner_script_id: String = "";
 
     private disable_sms_body: Boolean = false;
     private disable_sms_data: Boolean = false;
@@ -143,6 +144,10 @@ export class ClientOptions {
 
     setApiGatewayUrl(api_gateway_url: String) {
         this.api_gateway_url = api_gateway_url;
+    }
+
+    setPartnerScriptId(partner_script_id: String) {
+        this.partner_script_id = partner_script_id;
     }
 
     setCalendarEmailHashing(value: Boolean) {

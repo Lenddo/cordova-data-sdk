@@ -650,6 +650,11 @@ public class Lenddo extends CordovaPlugin {
             clientOptions.enableContactsEmailHashing();
         }
 
+        String partnerScriptId = optionsObject.optString("partner_script_id");
+        if (partnerScriptId != null && !partnerScriptId.isEmpty()) {
+            LenddoCoreInfo.setDataPartnerScriptId(cordova.getActivity().getApplication(), partnerScriptId);
+        }
+
         return clientOptions;
     }
 

@@ -63,6 +63,7 @@ var ClientOptions = /** @class */ (function () {
         this.wifi_only = false;
         this.enable_sms = true;
         this.api_gateway_url = "";
+        this.partner_script_id = "";
         this.disable_sms_body = false;
         this.disable_sms_data = false;
         this.disable_batt_charge_data = false;
@@ -113,6 +114,9 @@ var ClientOptions = /** @class */ (function () {
     };
     ClientOptions.prototype.setApiGatewayUrl = function (api_gateway_url) {
         this.api_gateway_url = api_gateway_url;
+    };
+    ClientOptions.prototype.setPartnerScriptId = function (partner_script_id) {
+        this.partner_script_id = partner_script_id;
     };
     ClientOptions.prototype.setCalendarEmailHashing = function (value) {
         this.calendar_display_name_hashing = value;
