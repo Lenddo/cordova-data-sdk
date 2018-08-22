@@ -41,7 +41,6 @@ The Lenddo SDK (lenddosdk module) allows you to collect information in order for
 Before incorporating the Data SDK into your app, you should be provided with the following information:
 
 *   Partner Script ID
-*   Lenddo Score Service API Secret
 
 Please ask for the information above from your Lenddo representative. If you have a dashboard account, these values
 can also be found there.
@@ -98,28 +97,6 @@ If you do not want the all default permissions added, you manually have to remov
 
 It is also important that these permissions are consistent with the privacy policy of your app.
 
-### Setting up Partner Script ID and API Secret
-As said above to be able to use the cordova-plugin-lenddo you are required to have a Partner Script Id and an API Secret. Before initiliazing Lenddo class, we need to add them as part of manifest file application's meta-tag.
-You can use ***cordova-custom-config*** to modify some native platform configuration files like manifest file or you can copy a code snippet in [config.xml](https://github.com/Lenddo/cordova-data-sdk-sample-app/blob/master/config.xml) of the sample app, as shown below.
-
-```xml
-
-<widget id="io.ionic.starter" xmlns:android="http://schemas.android.com/apk/res/android" ... >
-  ...
-  <platform name="android">
-      ...
-
-      <custom-config-file parent="./application" target="AndroidManifest.xml">
-        <meta-data android:name="partnerScriptId" android:value="PARTNER_SCRIPT_ID" />
-        <meta-data android:name="partnerApiSecret" android:value="API_SECRET" />
-      </custom-config-file>
-  </platform>
-  ...
-
-  <plugin name="cordova-custom-config" spec="^5.0.2" />
-</widget>
-```
-
 ### Javascript Example
 
 For vanilla cordova apps you can do:
@@ -152,9 +129,9 @@ export class MyApp {
   }
 }
 ```
-
 #### Data collection
-The plugin makes use of Promises to handle callbacks and error handling, here is a sample based on the sample app:
+##### Setting up Partner Script ID
+As said above to be able to use the cordova-plugin-lenddo you are required to have a Partner Script Id. After initiliazing Lenddo class, we need to setup the options which includes the dynamic setup your Partner Script Id. The plugin makes use of Promises to handle callbacks and error handling, here is a sample based on the sample app:
 
 ```typescript
     constructor() {
@@ -164,9 +141,9 @@ The plugin makes use of Promises to handle callbacks and error handling, here is
     startData() {
         let options = new ClientOptions;
 
-        // Setup any options you would like, and will be discuss further in this guide
-        options.setWifiOnly(true);
+        options.setPartnerScriptId('YOUR_PARTNET_SCRIPT_ID'); // <--- Dynamic setup of your Partner Script Id or through 'partner_script_id' field
 
+        // It is also good to call setup once
         this.service.setupData(options).then(()=> {
             // Make sure to call setupData() before calling startData()
             return service.startData(self.applicationId);
@@ -176,7 +153,7 @@ The plugin makes use of Promises to handle callbacks and error handling, here is
     }
 ```
 
-Registering callbacks for data collection
+##### Registering callbacks for data collection
 
 ```typescript
 export class ScoringTabComponent implements DataSendingCallback {
@@ -202,13 +179,15 @@ export class ScoringTabComponent implements DataSendingCallback {
 ```
 ***Make sure to call setupData() and setDataSendingCompleteCallback() before calling startData()***
 
-##### Options for Data collection
+##### Developer Options
 
 Various options can be set to control how the Data SDK sends data with [ClientOptions](https://github.com/Lenddo/cordova-data-sdk-sample-app/blob/master/src/components/scoring-tab/scoring-tab.ts#L150) class:
 
 ```typescript
   private setupOptions(): ClientOptions {
     let options = new ClientOptions;
+
+    options.setPartnerScriptId('YOUR_PARTNET_SCRIPT_ID'); // <--- Dynamic setup of your Partner Script Id or through 'partner_script_id' field
 
     if (this.dataMode === 'wifi_and_mobile') {
       options.setWifiOnly(true);
@@ -287,8 +266,8 @@ Various options can be set to control how the Data SDK sends data with [ClientOp
 ```
 
 #### Connecting social network
-
-When you are ready to start onboarding, you can then do something like
+##### Setting up Partner Script ID
+Each service needs a Partner Script Id, after initiliazing Lenddo class, we need to setup the onboarding helper which includes the dynamic setup your Partner Script Id. When you are ready to start onboarding, you can then do something like
 
 ```typescript
     constructor() {
@@ -297,13 +276,13 @@ When you are ready to start onboarding, you can then do something like
 
     startOnboarding() {
         var self = this;
+        // FormDataCollector is a data model class use for attaching applicant information via VerificationData including 'YOUR_PARTNER_SCRIPT_ID' And also make sure to assign an application id whenever doing onboarding
+        var formDataCollector = new FormDataCollector;
+        formDataCollector.partnerScriptId = 'YOUR_PARTNER_SCRIPT_ID';
+        formDataCollector.applicationId = this.applicationId;
+
         // Attach applicant information using VerificationData class
         var verification_data = new VerificationData;
-
-        // FormDataCollector is a data model class use for attaching applicant information via VerificationData
-        var formDataCollector = new FormDataCollector;
-        // Make sure to assign an application id whenever doing onboarding
-        formDataCollector.applicationId = this.applicationId;
         formDataCollector.verification_data = verification_data;
 
         var helper = new OnboardingHelper;
@@ -492,3 +471,14 @@ To fix this error, on your ***platform/android/build.gradle*** file, you need to
 
 The DataSDK is not available for IOS as such only stub functions are provided.
 
+## Common Issues
+
+There are some common issue need to be address properly when integrating Android Cordova SDK
+
+### Enable multidex for apps with over 64K methods
+
+When your app and the libraries it references exceed 65,536 methods, you encounter a build error that indicates your app has reached the limit of the Android build architecture.
+
+
+
+There are a lot of module to enable multidex, the one i use is [cordova-plugin-enable-multidex](https://www.npmjs.com/package/cordova-plugin-enable-multidex)

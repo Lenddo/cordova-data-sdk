@@ -95,7 +95,10 @@ public class Lenddo extends CordovaPlugin {
         } else if (action.equals("setupData")) {
             JSONObject optionsObject = args.getJSONObject(0);
             final ClientOptions clientOptions = buildClientOptions(optionsObject, callbackContext);
-            
+            if (clientOptions.getPartnerScriptId() == null || clientOptions.getPartnerScriptId().isEmpty()) {
+                callbackContext.error("Partner Script Id must not be null");
+                return false;
+            }
             cordova.getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -132,6 +135,26 @@ public class Lenddo extends CordovaPlugin {
             LenddoEventListener lenddoEventListener = new LenddoEventListener() {
                 @Override
                 public boolean onButtonClicked(FormDataCollector collector) {
+                    if (formDataCollector.getPartnerScriptId() == null || formDataCollector.getPartnerScriptId().isEmpty()) {
+                        Log.e(TAG, "Partner Script Id must not be null!");
+                        final JSONObject jsonObject = new JSONObject();
+                        try {
+                            jsonObject.put("callback", "onboarding_completion_callback");
+                            jsonObject.put("status", "cancelled");
+                            jsonObject.put("code", 301);
+                            jsonObject.put("message", "Partner Script Id must not be null");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        cordova.getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                webView.getEngine().evaluateJavascript("window.Lenddo.registerOnboardingCompletionCallback.error(" + jsonObject.toString() + ")", null);
+
+                            }
+                        });
+                        return false;
+                    }
                     collector.setApplicationId(formDataCollector.getApplicationId());
                     collector.setPartnerScriptId(formDataCollector.getPartnerScriptId());
                     collector.setFirstName(formDataCollector.getFirstName());
