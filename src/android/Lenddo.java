@@ -27,6 +27,8 @@ import java.util.Map;
 public class Lenddo extends CordovaPlugin {
     public static final String TAG = Lenddo.class.getName();
     public static UIHelper uiHelper;
+    private String dataPartnerScriptId;
+
     OnDataSendingCompleteCallback providerTokenSendingCompleteCallback = new OnDataSendingCompleteCallback() {
         @Override
         public void onDataSendingSuccess() {
@@ -314,6 +316,7 @@ public class Lenddo extends CordovaPlugin {
         } else if (action.equals("clear")) {
             AndroidData.clear(cordova.getActivity().getApplication());
             LenddoCoreInfo.initCoreInfo(cordova.getActivity().getApplication());
+            LenddoCoreInfo.setDataPartnerScriptId(cordova.getActivity().getApplication(), this.dataPartnerScriptId);
         } else if (action.equals("send_partner_data")) {
             JSONObject partnerData = args.getJSONObject(0);
             AndroidData.sendPartnerApplicationData(cordova.getActivity(), partnerData.toString(), new OnDataSendingCompleteCallback() {
@@ -652,7 +655,8 @@ public class Lenddo extends CordovaPlugin {
 
         String partnerScriptId = optionsObject.optString("partner_script_id");
         if (partnerScriptId != null && !partnerScriptId.isEmpty()) {
-            LenddoCoreInfo.setDataPartnerScriptId(cordova.getActivity().getApplication(), partnerScriptId);
+            this.dataPartnerScriptId = partnerScriptId;
+            LenddoCoreInfo.setDataPartnerScriptId(cordova.getActivity().getApplication(), this.dataPartnerScriptId);
         }
 
         return clientOptions;
