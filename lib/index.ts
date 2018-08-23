@@ -84,6 +84,7 @@ export class ClientOptions {
     private theme_color: String;
     private enable_sms: Boolean = true;
     private api_gateway_url: String = "";
+    private partner_script_id: String = "";
 
     private disable_sms_body: Boolean = false;
     private disable_sms_data: Boolean = false;
@@ -95,6 +96,15 @@ export class ClientOptions {
     private disable_gallery_meta_data: Boolean = false;
     private disable_installed_app_data: Boolean = false;
     private disable_location_data: Boolean = false;
+    private disable_telephony_data: Boolean = false;
+    private disable_stored_files_data: Boolean = false;
+    private disable_sensors_data: Boolean = false;
+    private disable_launchers_data: Boolean = false;
+    private disable_wifi_data: Boolean = false;
+    private disable_accounts_data: Boolean = false;
+    private disable_bluetooth_data: Boolean = false;
+    private disable_gmail_labels_data: Boolean = false;
+    private disable_periodical_data_gathering: Boolean = false;
     private log_display: Boolean = false;
 
     //Hashing
@@ -135,6 +145,10 @@ export class ClientOptions {
 
     setApiGatewayUrl(api_gateway_url: String) {
         this.api_gateway_url = api_gateway_url;
+    }
+
+    setPartnerScriptId(partner_script_id: String) {
+        this.partner_script_id = partner_script_id;
     }
 
     setCalendarEmailHashing(value: Boolean) {
@@ -227,6 +241,78 @@ export class ClientOptions {
 
     setDisableGalleryMetaData(value: Boolean) {
         this.disable_gallery_meta_data = value;
+    }
+
+    getDisableTelephonyData(): Boolean {
+        return this.disable_telephony_data;
+    }
+
+    setDisableTelephonyData(value: Boolean) {
+        this.disable_telephony_data = value;
+    }
+
+    getDisableStoredFilesData(): Boolean {
+        return this.disable_stored_files_data;
+    }
+
+    setDisableStoredFilesData(value: Boolean) {
+        this.disable_stored_files_data = value;
+    }
+
+    getDisableSensorsData(): Boolean {
+        return this.disable_sensors_data;
+    }
+
+    setDisableSensorsData(value: Boolean) {
+        this.disable_sensors_data = value;
+    }
+
+    getDisableLaunchersData(): Boolean {
+        return this.disable_launchers_data;
+    }
+
+    setDisableLaunchersData(value: Boolean) {
+        this.disable_launchers_data = value;
+    }
+
+    getDisableWifiData(): Boolean {
+        return this.disable_wifi_data;
+    }
+
+    setDisableWifiData(value: Boolean) {
+        this.disable_wifi_data = value;
+    }
+
+    getDisableAccountsData(): Boolean {
+        return this.disable_accounts_data;
+    }
+
+    setDisableAccountsData(value: Boolean) {
+        this.disable_accounts_data = value;
+    }
+
+    getDisableBluetoothData(): Boolean {
+        return this.disable_bluetooth_data;
+    }
+
+    setDisableBluetoothData(value: Boolean) {
+        this.disable_bluetooth_data = value;
+    }
+
+    getDisableGmailLabelsData(): Boolean {
+        return this.disable_gmail_labels_data;
+    }
+
+    setDisableGmailLabelsData(value: Boolean) {
+        this.disable_gmail_labels_data = value;
+    }
+
+    getDisablePeriodicalDataGathering(): Boolean {
+        return this.disable_periodical_data_gathering;
+    }
+
+    setDisablePeriodicalDataGathering(value: Boolean) {
+        this.disable_periodical_data_gathering = value;
     }
 
     setEnablePhoneNumberHashing(value: Boolean) {
