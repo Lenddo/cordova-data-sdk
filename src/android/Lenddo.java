@@ -651,6 +651,10 @@ public class Lenddo extends CordovaPlugin {
             clientOptions.disableGmailLabelsInfoCollection();
         }
 
+        if (optionsObject.optBoolean("disable_periodical_data_gathering")) {
+            clientOptions.disablePeriodicalDataGathering();
+        }
+
         //Hashing
         if (optionsObject.optBoolean("calendar_organizer_hashing")) {
             clientOptions.enableCalendarOrganizerHashing();

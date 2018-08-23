@@ -82,6 +82,7 @@ export declare class ClientOptions {
     private disable_accounts_data;
     private disable_bluetooth_data;
     private disable_gmail_labels_data;
+    private disable_periodical_data_gathering;
     private log_display;
     private calendar_email_hashing;
     private calendar_display_name_hashing;
@@ -137,6 +138,8 @@ export declare class ClientOptions {
     setDisableBluetoothData(value: Boolean): void;
     getDisableGmailLabelsData(): Boolean;
     setDisableGmailLabelsData(value: Boolean): void;
+    getDisablePeriodicalDataGathering(): Boolean;
+    setDisablePeriodicalDataGathering(value: Boolean): void;
     setEnablePhoneNumberHashing(value: Boolean): void;
     setEnableContactsEmailHashing(value: Boolean): void;
     setEnableContactsNameHashing(value: Boolean): void;

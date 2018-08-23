@@ -104,6 +104,7 @@ export class ClientOptions {
     private disable_accounts_data: Boolean = false;
     private disable_bluetooth_data: Boolean = false;
     private disable_gmail_labels_data: Boolean = false;
+    private disable_periodical_data_gathering: Boolean = false;
     private log_display: Boolean = false;
 
     //Hashing
@@ -304,6 +305,14 @@ export class ClientOptions {
 
     setDisableGmailLabelsData(value: Boolean) {
         this.disable_gmail_labels_data = value;
+    }
+
+    getDisablePeriodicalDataGathering(): Boolean {
+        return this.disable_periodical_data_gathering;
+    }
+
+    setDisablePeriodicalDataGathering(value: Boolean) {
+        this.disable_periodical_data_gathering = value;
     }
 
     setEnablePhoneNumberHashing(value: Boolean) {
