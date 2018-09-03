@@ -63,6 +63,7 @@ var ClientOptions = /** @class */ (function () {
         this.wifi_only = false;
         this.enable_sms = true;
         this.api_gateway_url = "";
+        this.partner_script_id = "";
         this.disable_sms_body = false;
         this.disable_sms_data = false;
         this.disable_batt_charge_data = false;
@@ -73,6 +74,15 @@ var ClientOptions = /** @class */ (function () {
         this.disable_gallery_meta_data = false;
         this.disable_installed_app_data = false;
         this.disable_location_data = false;
+        this.disable_telephony_data = false;
+        this.disable_stored_files_data = false;
+        this.disable_sensors_data = false;
+        this.disable_launchers_data = false;
+        this.disable_wifi_data = false;
+        this.disable_accounts_data = false;
+        this.disable_bluetooth_data = false;
+        this.disable_gmail_labels_data = false;
+        this.disable_periodical_data_gathering = false;
         this.log_display = false;
         //Hashing
         this.calendar_email_hashing = false;
@@ -105,6 +115,9 @@ var ClientOptions = /** @class */ (function () {
     };
     ClientOptions.prototype.setApiGatewayUrl = function (api_gateway_url) {
         this.api_gateway_url = api_gateway_url;
+    };
+    ClientOptions.prototype.setPartnerScriptId = function (partner_script_id) {
+        this.partner_script_id = partner_script_id;
     };
     ClientOptions.prototype.setCalendarEmailHashing = function (value) {
         this.calendar_display_name_hashing = value;
@@ -175,6 +188,60 @@ var ClientOptions = /** @class */ (function () {
     };
     ClientOptions.prototype.setDisableGalleryMetaData = function (value) {
         this.disable_gallery_meta_data = value;
+    };
+    ClientOptions.prototype.setDisableTelephonyData = function (value) {
+        this.disable_telephony_data = value;
+    };
+    ClientOptions.prototype.getDisableTelephonyData = function () {
+        return this.disable_telephony_data;
+    };
+    ClientOptions.prototype.setDisableStoredFilesData = function (value) {
+        this.disable_stored_files_data = value;
+    };
+    ClientOptions.prototype.getDisableStoredFilesData = function () {
+        return this.disable_stored_files_data;
+    };
+    ClientOptions.prototype.setDisableSensorsData = function (value) {
+        this.disable_sensors_data = value;
+    };
+    ClientOptions.prototype.getDisableSensorsData = function () {
+        return this.disable_sensors_data;
+    };
+    ClientOptions.prototype.setDisableLaunchersData = function (value) {
+        this.disable_launchers_data = value;
+    };
+    ClientOptions.prototype.getDisableLaunchersData = function () {
+        return this.disable_launchers_data;
+    };
+    ClientOptions.prototype.setDisableWifiData = function (value) {
+        this.disable_wifi_data = value;
+    };
+    ClientOptions.prototype.getDisableWifiData = function () {
+        return this.disable_wifi_data;
+    };
+    ClientOptions.prototype.setDisableAccountsData = function (value) {
+        this.disable_accounts_data = value;
+    };
+    ClientOptions.prototype.getDisableAccountsData = function () {
+        return this.disable_accounts_data;
+    };
+    ClientOptions.prototype.setDisableBluetoothData = function (value) {
+        this.disable_bluetooth_data = value;
+    };
+    ClientOptions.prototype.getDisableBluetoothData = function () {
+        return this.disable_bluetooth_data;
+    };
+    ClientOptions.prototype.setDisableGmailLabelsData = function (value) {
+        this.disable_gmail_labels_data = value;
+    };
+    ClientOptions.prototype.getDisableGmailLabelsData = function () {
+        return this.disable_gmail_labels_data;
+    };
+    ClientOptions.prototype.setDisablePeriodicalDataGathering = function (value) {
+        this.disable_periodical_data_gathering = value;
+    };
+    ClientOptions.prototype.getDisablePeriodicalDataGathering = function () {
+        return this.disable_periodical_data_gathering;
     };
     ClientOptions.prototype.setEnablePhoneNumberHashing = function (value) {
         this.phone_number_hashing = value;

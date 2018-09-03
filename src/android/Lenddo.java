@@ -11,7 +11,6 @@ import com.lenddo.mobile.core.LenddoCoreUtils;
 import com.lenddo.mobile.core.models.GovernmentId;
 import com.lenddo.mobile.core.models.VerificationData;
 import com.lenddo.mobile.datasdk.AndroidData;
-import com.lenddo.mobile.datasdk.client.LenddoConstants;
 import com.lenddo.mobile.datasdk.listeners.OnDataSendingCompleteCallback;
 import com.lenddo.mobile.datasdk.models.ClientOptions;
 import com.lenddo.mobile.datasdk.utils.AndroidDataUtils;
@@ -28,6 +27,8 @@ import java.util.Map;
 public class Lenddo extends CordovaPlugin {
     public static final String TAG = Lenddo.class.getName();
     public static UIHelper uiHelper;
+    private String dataPartnerScriptId;
+
     OnDataSendingCompleteCallback providerTokenSendingCompleteCallback = new OnDataSendingCompleteCallback() {
         @Override
         public void onDataSendingSuccess() {
@@ -90,11 +91,14 @@ public class Lenddo extends CordovaPlugin {
     @Override
     public boolean execute(String action, JSONArray args, final CallbackContext callbackContext) throws JSONException {
         if (action.equals("version")) {
-            callbackContext.success(LenddoConstants.DATA_SDK_VERSION);
+            callbackContext.success(LenddoCoreInfo.DATA_SDK_VERSION);
         } else if (action.equals("setupData")) {
             JSONObject optionsObject = args.getJSONObject(0);
             final ClientOptions clientOptions = buildClientOptions(optionsObject, callbackContext);
-            
+            if (clientOptions.getPartnerScriptId() == null || clientOptions.getPartnerScriptId().isEmpty()) {
+                callbackContext.error("Partner Script Id must not be null");
+                return false;
+            }
             cordova.getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -131,6 +135,26 @@ public class Lenddo extends CordovaPlugin {
             LenddoEventListener lenddoEventListener = new LenddoEventListener() {
                 @Override
                 public boolean onButtonClicked(FormDataCollector collector) {
+                    if (formDataCollector.getPartnerScriptId() == null || formDataCollector.getPartnerScriptId().isEmpty()) {
+                        Log.e(TAG, "Partner Script Id must not be null!");
+                        final JSONObject jsonObject = new JSONObject();
+                        try {
+                            jsonObject.put("callback", "onboarding_completion_callback");
+                            jsonObject.put("status", "cancelled");
+                            jsonObject.put("code", 301);
+                            jsonObject.put("message", "Partner Script Id must not be null");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        cordova.getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                webView.getEngine().evaluateJavascript("window.Lenddo.registerOnboardingCompletionCallback.error(" + jsonObject.toString() + ")", null);
+
+                            }
+                        });
+                        return false;
+                    }
                     collector.setApplicationId(formDataCollector.getApplicationId());
                     collector.setPartnerScriptId(formDataCollector.getPartnerScriptId());
                     collector.setFirstName(formDataCollector.getFirstName());
@@ -287,13 +311,13 @@ public class Lenddo extends CordovaPlugin {
                 }
             }
 
-            String apiRegion = helperDataObject.optString("apiRegion");
-            if (!apiRegion.isEmpty() && apiRegion.length() < 3) {
-                UIHelper.setApiRegion(apiRegion);
-            }
-
             uiHelper = new UIHelper(cordova.getActivity(), lenddoEventListener);
             uiHelper.customizeBackPopup(title, message, okButton, cancelButton);
+
+            String apiRegion = helperDataObject.optString("apiRegion");
+            if (!apiRegion.isEmpty() && apiRegion.length() < 3) {
+                uiHelper.setApiRegion(apiRegion);
+            }
 
             cordova.getActivity().runOnUiThread(new Runnable() {
 
@@ -315,6 +339,7 @@ public class Lenddo extends CordovaPlugin {
         } else if (action.equals("clear")) {
             AndroidData.clear(cordova.getActivity().getApplication());
             LenddoCoreInfo.initCoreInfo(cordova.getActivity().getApplication());
+            LenddoCoreInfo.setDataPartnerScriptId(cordova.getActivity().getApplication(), this.dataPartnerScriptId);
         } else if (action.equals("send_partner_data")) {
             JSONObject partnerData = args.getJSONObject(0);
             AndroidData.sendPartnerApplicationData(cordova.getActivity(), partnerData.toString(), new OnDataSendingCompleteCallback() {
@@ -594,6 +619,42 @@ public class Lenddo extends CordovaPlugin {
             clientOptions.disableLocationDataCollection();
         }
 
+        if (optionsObject.optBoolean("disable_telephony_data")) {
+            clientOptions.disableTelephonyInfoDataCollection();
+        }
+
+        if (optionsObject.optBoolean("disable_stored_files_data")) {
+            clientOptions.disableStoredFilesInformationCollection();
+        }
+
+        if (optionsObject.optBoolean("disable_sensors_data")) {
+            clientOptions.disableSensorsCollection();
+        }
+
+        if (optionsObject.optBoolean("disable_launchers_data")) {
+            clientOptions.disableLauncherAppsCollection();
+        }
+
+        if (optionsObject.optBoolean("disable_wifi_data")) {
+            clientOptions.disableWifiInfoCollection();
+        }
+
+        if (optionsObject.optBoolean("disable_accounts_data")) {
+            clientOptions.disableAccountsInfoCollection();
+        }
+
+        if (optionsObject.optBoolean("disable_bluetooth_data")) {
+            clientOptions.disableBluetoothInfoCollection();
+        }
+
+        if (optionsObject.optBoolean("disable_gmail_labels_data")) {
+            clientOptions.disableGmailLabelsInfoCollection();
+        }
+
+        if (optionsObject.optBoolean("disable_periodical_data_gathering")) {
+            clientOptions.disablePeriodicalDataGathering();
+        }
+
         //Hashing
         if (optionsObject.optBoolean("calendar_organizer_hashing")) {
             clientOptions.enableCalendarOrganizerHashing();
@@ -617,6 +678,12 @@ public class Lenddo extends CordovaPlugin {
 
         if (optionsObject.optBoolean("contacts_email_hashing")) {
             clientOptions.enableContactsEmailHashing();
+        }
+
+        String partnerScriptId = optionsObject.optString("partner_script_id");
+        if (partnerScriptId != null && !partnerScriptId.isEmpty()) {
+            this.dataPartnerScriptId = partnerScriptId;
+            LenddoCoreInfo.setDataPartnerScriptId(cordova.getActivity().getApplication(), this.dataPartnerScriptId);
         }
 
         return clientOptions;
