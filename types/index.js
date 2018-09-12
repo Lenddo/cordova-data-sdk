@@ -296,7 +296,7 @@ var Lenddo = /** @class */ (function () {
      *
      */
     function Lenddo() {
-
+        window.Lenddo.initialize();
     }
     /**
      * Returns and instance of the Lenddo Service if already set
