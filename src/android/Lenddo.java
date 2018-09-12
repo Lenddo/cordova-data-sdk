@@ -323,7 +323,7 @@ public class Lenddo extends CordovaPlugin {
 
                 @Override
                 public void run() {
-                    UIHelper.showAuthorize(cordova.getActivity(), uiHelper);
+                    uiHelper.showAuthorize();
                 }
             });
 
@@ -684,6 +684,7 @@ public class Lenddo extends CordovaPlugin {
         if (partnerScriptId != null && !partnerScriptId.isEmpty()) {
             this.dataPartnerScriptId = partnerScriptId;
             LenddoCoreInfo.setDataPartnerScriptId(cordova.getActivity().getApplication(), this.dataPartnerScriptId);
+            clientOptions.setPartnerScriptId(partnerScriptId);
         }
 
         return clientOptions;
