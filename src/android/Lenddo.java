@@ -28,6 +28,7 @@ public class Lenddo extends CordovaPlugin {
     public static final String TAG = Lenddo.class.getName();
     public static UIHelper uiHelper;
     private String dataPartnerScriptId;
+    private boolean isLenddoCoreInfoInitialized = false;
 
     OnDataSendingCompleteCallback providerTokenSendingCompleteCallback = new OnDataSendingCompleteCallback() {
         @Override
@@ -102,6 +103,13 @@ public class Lenddo extends CordovaPlugin {
             cordova.getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
+                    Log.d(TAG, "isLenddoCoreInfoInitialized = " + isLenddoCoreInfoInitialized);
+                    if (!isLenddoCoreInfoInitialized) {
+                        LenddoCoreInfo.initCoreInfo(cordova.getActivity().getApplication());
+                        isLenddoCoreInfoInitialized = true;
+                    }
+
+                    LenddoCoreInfo.setDataPartnerScriptId(cordova.getActivity().getApplication(), clientOptions.getPartnerScriptId());
                     AndroidData.setup(cordova.getActivity().getApplication(), clientOptions);
                     callbackContext.success();
                 }
@@ -113,6 +121,7 @@ public class Lenddo extends CordovaPlugin {
                 @Override
                 public void run() {
                     LenddoCoreInfo.initCoreInfo(cordova.getActivity().getApplication());
+                    isLenddoCoreInfoInitialized = true;
                 }
             });
 
@@ -340,6 +349,7 @@ public class Lenddo extends CordovaPlugin {
             AndroidData.clear(cordova.getActivity().getApplication());
             LenddoCoreInfo.initCoreInfo(cordova.getActivity().getApplication());
             LenddoCoreInfo.setDataPartnerScriptId(cordova.getActivity().getApplication(), this.dataPartnerScriptId);
+            isLenddoCoreInfoInitialized = true;
         } else if (action.equals("send_partner_data")) {
             JSONObject partnerData = args.getJSONObject(0);
             AndroidData.sendPartnerApplicationData(cordova.getActivity(), partnerData.toString(), new OnDataSendingCompleteCallback() {
@@ -683,7 +693,6 @@ public class Lenddo extends CordovaPlugin {
         String partnerScriptId = optionsObject.optString("partner_script_id");
         if (partnerScriptId != null && !partnerScriptId.isEmpty()) {
             this.dataPartnerScriptId = partnerScriptId;
-            LenddoCoreInfo.setDataPartnerScriptId(cordova.getActivity().getApplication(), this.dataPartnerScriptId);
             clientOptions.setPartnerScriptId(partnerScriptId);
         }
 
