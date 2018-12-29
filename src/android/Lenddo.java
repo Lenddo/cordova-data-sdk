@@ -32,6 +32,24 @@ public class Lenddo extends CordovaPlugin {
 
     OnDataSendingCompleteCallback providerTokenSendingCompleteCallback = new OnDataSendingCompleteCallback() {
         @Override
+        public void onDataSendingStart() {
+            final JSONObject jsonObject = new JSONObject();
+            try {
+                jsonObject.put("callback", "register_provider_token_callback");
+                jsonObject.put("status", "started");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            cordova.getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    webView.getEngine().evaluateJavascript("window.Lenddo.registerDataSendingCompletionCallback.success(" + jsonObject.toString() +")", null);
+                }
+            });
+        }
+
+
+        @Override
         public void onDataSendingSuccess() {
             final JSONObject jsonObject = new JSONObject();
             try {
@@ -354,6 +372,24 @@ public class Lenddo extends CordovaPlugin {
             JSONObject partnerData = args.getJSONObject(0);
             AndroidData.sendPartnerApplicationData(cordova.getActivity(), partnerData.toString(), new OnDataSendingCompleteCallback() {
                 @Override
+                public void onDataSendingStart() {
+                    Log.d(TAG, "registerPartnerApplicationCallback onDataSendingStart");
+                    final JSONObject jsonObject = new JSONObject();
+                    try {
+                        jsonObject.put("callback", "partner_application_callback");
+                        jsonObject.put("status", "started");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    cordova.getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            webView.getEngine().evaluateJavascript("window.Lenddo.registerPartnerApplicationCallback.success(" + jsonObject.toString() + ")", null);
+                        }
+                    });
+                }
+
+                @Override
                 public void onDataSendingSuccess() {
                     Log.d(TAG, "registerPartnerApplicationCallback onDataSendingSuccess");
                     final JSONObject jsonObject = new JSONObject();
@@ -446,6 +482,24 @@ public class Lenddo extends CordovaPlugin {
 
         clientOptions.registerPartnerApplicationCallback(new OnDataSendingCompleteCallback() {
             @Override
+            public void onDataSendingStart() {
+                Log.d(TAG, "registerPartnerApplicationCallback onDataSendingStart");
+                final JSONObject jsonObject = new JSONObject();
+                try {
+                    jsonObject.put("callback", "partner_application_callback");
+                    jsonObject.put("status", "started");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                cordova.getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        webView.getEngine().evaluateJavascript("window.Lenddo.registerPartnerApplicationCallback.success(" + jsonObject.toString() + ")", null);
+                    }
+                });
+            }
+
+            @Override
             public void onDataSendingSuccess() {
                 Log.d(TAG, "registerPartnerApplicationCallback onDataSendingSuccess");
                 final JSONObject jsonObject = new JSONObject();
@@ -505,6 +559,25 @@ public class Lenddo extends CordovaPlugin {
         });
 
         clientOptions.registerDataSendingCompletionCallback(new OnDataSendingCompleteCallback() {
+            @Override
+            public void onDataSendingStart() {
+                Log.d(TAG, "registerDataSendingCompletionCallback onDataSendingStart");
+                final JSONObject jsonObject = new JSONObject();
+                try {
+                    jsonObject.put("callback", "data_sending_completion_callback");
+                    jsonObject.put("status", "started");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                cordova.getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        webView.getEngine().evaluateJavascript("window.Lenddo.registerDataSendingCompletionCallback.success(" + jsonObject.toString() + ")", null);
+                    }
+                });
+            }
+
             @Override
             public void onDataSendingSuccess() {
                 Log.d(TAG, "registerDataSendingCompletionCallback onDataSendingSuccess ");
