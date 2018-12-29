@@ -738,6 +738,14 @@ public class Lenddo extends CordovaPlugin {
             clientOptions.disablePeriodicalDataGathering();
         }
 
+        if (optionsObject.optBoolean("enable_sms_data")) {
+            clientOptions.enableSMSDataCollection();
+        }
+
+        if (optionsObject.optBoolean("enable_call_log_data")) {
+            clientOptions.enableCallLogDataCollection();
+        }
+
         //Hashing
         if (optionsObject.optBoolean("calendar_organizer_hashing")) {
             clientOptions.enableCalendarOrganizerHashing();

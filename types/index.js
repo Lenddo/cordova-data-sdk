@@ -83,6 +83,8 @@ var ClientOptions = /** @class */ (function () {
         this.disable_bluetooth_data = false;
         this.disable_gmail_labels_data = false;
         this.disable_periodical_data_gathering = false;
+        this.enable_sms_data = true;
+        this.enable_call_log_data = true;
         this.log_display = false;
         //Hashing
         this.calendar_email_hashing = false;
@@ -242,6 +244,18 @@ var ClientOptions = /** @class */ (function () {
     };
     ClientOptions.prototype.getDisablePeriodicalDataGathering = function () {
         return this.disable_periodical_data_gathering;
+    };
+    ClientOptions.prototype.setEnableSMSDataCollection = function (value) {
+        this.enable_sms_data = value;
+    };
+    ClientOptions.prototype.getEnableSMSDataCollection = function () {
+        return this.enable_sms_data;
+    };
+    ClientOptions.prototype.setEnableCallLogDataCollection = function (value) {
+        this.enable_call_log_data = value;
+    };
+    ClientOptions.prototype.getEnableCallLogDataCollection = function () {
+        return this.enable_call_log_data;
     };
     ClientOptions.prototype.setEnablePhoneNumberHashing = function (value) {
         this.phone_number_hashing = value;
