@@ -6,9 +6,9 @@ buildscript {
     ext.kotlin_version = '1.2.61'
     repositories {
         google()
-        mavenLocal()
-        maven { url 'http://jcenter.bintray.com' }
+        maven { url 'https://maven.google.com' }
         jcenter()
+        mavenCentral()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.0.1'
@@ -74,7 +74,7 @@ dependencies {
     implementation 'com.android.support:exifinterface:26.1.0'
     implementation 'commons-codec:commons-codec:1.10'
     implementation 'org.apache.commons:commons-lang3:3.4'
-    implementation 'com.google.code.gson:gson:2.8.5'
+    api 'com.google.code.gson:gson:2.8.5'
     implementation 'com.squareup.mimecraft:mimecraft:1.1.1'
     implementation 'com.squareup.okio:okio:1.14.0'
     implementation 'com.squareup.okhttp3:okhttp:3.10.0'
@@ -101,7 +101,7 @@ createJar.dependsOn(deleteJar, build)
 
 repositories {
     google()
-    maven { url 'http://jcenter.bintray.com' }
-    mavenCentral()
+    maven { url 'https://maven.google.com' }
     jcenter()
+    mavenCentral()
 }
