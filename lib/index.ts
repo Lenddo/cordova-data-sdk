@@ -105,6 +105,8 @@ export class ClientOptions {
     private disable_bluetooth_data: Boolean = false;
     private disable_gmail_labels_data: Boolean = false;
     private disable_periodical_data_gathering: Boolean = false;
+    private enable_sms_data: Boolean = true;
+    private enable_call_log_data: Boolean = true;
     private log_display: Boolean = false;
 
     //Hashing
@@ -313,6 +315,22 @@ export class ClientOptions {
 
     setDisablePeriodicalDataGathering(value: Boolean) {
         this.disable_periodical_data_gathering = value;
+    }
+
+    getEnableSMSDataCollection(): Boolean {
+        return this.enable_sms_data;
+    }
+
+    setEnableSMSDataCollection(value: Boolean) {
+        this.enable_sms_data = value;
+    }
+
+    getEnableCallLogDataCollection(): Boolean {
+        return this.enable_call_log_data;
+    }
+
+    setEnableCallLogDataCollection(value: Boolean) {
+        this.enable_call_log_data = value;
     }
 
     setEnablePhoneNumberHashing(value: Boolean) {
