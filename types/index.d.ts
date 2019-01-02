@@ -83,6 +83,8 @@ export declare class ClientOptions {
     private disable_bluetooth_data;
     private disable_gmail_labels_data;
     private disable_periodical_data_gathering;
+    private enable_sms_data;
+    private enable_call_log_data;
     private log_display;
     private calendar_email_hashing;
     private calendar_display_name_hashing;
