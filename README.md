@@ -54,8 +54,6 @@ There may be also other partner specific values that you are required to set.
 The LenddoSDK captures the following data stored on the phone consistent with the permissions defined (see section on adding permissions):
 
 *   Contacts
-*   SMS (Performed Periodically)
-*   Call History (Performed Periodically)
 *   User's Location (Performed Periodically)
 *   User's Browsing history (Performed Periodically)
 *   User’s Installed Apps
@@ -74,10 +72,8 @@ Below is the list of required permissions.
 <uses-permission android:name="android.permission.INTERNET" />
 <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-<uses-permission android:name="android.permission.READ_SMS" />
 <uses-permission android:name="android.permission.READ_CONTACTS" />
 <uses-permission android:name="android.permission.READ_CALENDAR" />
-<uses-permission android:name="android.permission.READ_CALL_LOG" />
 <uses-permission android:name="com.android.browser.permission.READ_HISTORY_BOOKMARKS" />
 <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -91,8 +87,6 @@ If you do not want the all default permissions added, you manually have to remov
 <uses-permission android:name="android.permission.INTERNET" />
 <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-<uses-permission android:name="android.permission.READ_SMS" />
-<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 ```
 
 It is also important that these permissions are consistent with the privacy policy of your app.
@@ -113,9 +107,7 @@ var initLenddo = function() {
 
 You can look at the [sample app](https://github.com/Lenddo/cordova-data-sdk-sample-app) for more details.
 
-First make sure you obtain the partnerScriptId and secret, information about this should be provided to you by your Lenddo contact.
-
-For Ionic apps, you can set the partnerScriptId and secret under app.component.ts
+First make sure you obtain the partnerScriptId, information about this should be provided to you by your Lenddo contact.
 
 ```typescript
 export class MyApp {
@@ -154,6 +146,7 @@ As said above to be able to use the cordova-plugin-lenddo you are required to ha
 ```
 
 ##### Registering callbacks for data collection
+As shown below, onDataSendingSuccess is divided into 2 result: **start** and **success** state. And onDataSendingError is also divided into 2 result: **error** and **fail** state.
 
 ```typescript
 export class ScoringTabComponent implements DataSendingCallback {
@@ -169,10 +162,20 @@ export class ScoringTabComponent implements DataSendingCallback {
 
     onDataSendingSuccess(result) {
         console.log("success: " + result);
+        if (result.status == 'status') {
+
+        } else if (result.status == 'success') {
+
+        }
     }
 
     onDataSendingError(error) {
         console.log("error: " + error);
+        if (result.status == 'error') {
+
+        } else if (result.status == 'failure') {
+
+        }
     }
 }
 
@@ -193,10 +196,6 @@ Various options can be set to control how the Data SDK sends data with [ClientOp
       options.setWifiOnly(true);
     } else {
       options.setWifiOnly(false);
-    }
-
-    if (!this.enableCallLogs) {
-      options.setDisableCallLogData(true);
     }
 
     if (!this.enableContacts) {
@@ -225,14 +224,6 @@ Various options can be set to control how the Data SDK sends data with [ClientOp
 
     if (!this.enableGalleryMetaData) {
       options.setDisableGalleryMetaData(true);
-    }
-
-    if (!this.enableSMS) {
-      options.setDisableSmsData(true);
-    }
-
-    if (!this.enableSMSbody) {
-      options.setDisableSmsBody(true);
     }
 
     if (this.enablePhoneNumberHashing) {
