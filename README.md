@@ -1,7 +1,7 @@
----
-Title: Lenddo Cordova Plugin
-Description: Cordova bindings for the Lenddo Data SDK and Onboarding SDK
----
+## NOTE: this is the official version of the cordova-plugin-lenddo. please refrain from using the one in https://www.npmjs.com/package/cordova-plugin-lenddo moving forward as it will no longer be maintained there.
+```
+npm i @lenddo/cordova-plugin-lenddo
+```
 
 # cordova-plugin-lenddo
 

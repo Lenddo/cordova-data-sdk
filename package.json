@@ -1,6 +1,6 @@
 {
-  "name": "cordova-plugin-lenddo",
-  "version": "1.8.0",
+  "name": "@lenddo/cordova-plugin-lenddo",
+  "version": "1.8.1",
   "description": "Cordova Lenddo Plugin",
   "main": "./types/index.js",
   "types": "./types/index.d.ts",
