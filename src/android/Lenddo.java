@@ -1,6 +1,5 @@
 package org.apache.cordova.plugin;
 
-import android.support.annotation.NonNull;
 import android.util.Log;
 
 import org.apache.cordova.CordovaPlugin;
@@ -476,7 +475,7 @@ public class Lenddo extends CordovaPlugin {
         return false;
     }
 
-    @NonNull
+
     private ClientOptions buildClientOptions(JSONObject optionsObject, final CallbackContext callbackContext) {
         final ClientOptions clientOptions = new ClientOptions();
 
@@ -780,7 +779,7 @@ public class Lenddo extends CordovaPlugin {
         return clientOptions;
     }
 
-    @NonNull
+
     private FormDataCollector buildFormDataCollector(JSONObject helperObject, final CallbackContext callbackContext) {
         final FormDataCollector formDataCollector = new FormDataCollector();
         JSONObject formDataJsonObject = helperObject.optJSONObject("formDataCollector");

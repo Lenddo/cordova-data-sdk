@@ -10,7 +10,7 @@
 
     <!--Lenddo Data SDK Strings-->
     <string name="grant_access">Grant Access</string>
-    <string name="permission_intro">Please give us access permission to Phone, Contacts, Photos/Media/Files, Location, Accounts, and Calendar in order to generate your credit score. Rest assured, your data is safe as we use industry standard for encrypting private data over the internet.\n</string>
+    <string name="permission_intro">Please give us access permission to %s in order to generate your credit score. Rest assured, your data is safe as we use industry standard for encrypting private data over the internet.\n</string>
     <string name="back_allcaps">BACK</string>
     <string name="cancel_allcaps">CANCEL</string>
     <string name="done_allcaps">DONE</string>
@@ -34,7 +34,7 @@
     <string name="permission_title_accounts">Accounts</string>
 
     <string name="permission_detail_sms">We use read access to SMS messages to determine a list of people you message most frequently. This helps us build a social graph by making use of the data you provided us.</string>
-    <string name="permission_detail_phone">We use the phone state to obtain your Android device ID, which is sent to our servers and used for analytics and reporting purposes. We use read access to your call logs to determine a list of people you contact most frequently. This helps us build a social graph by making use of the data you provided us.</string>
+    <string name="permission_detail_phone">We use the phone state to obtain your Android device ID, which is sent to our servers and used for analytics and reporting purposes.</string>
     <string name="permission_detail_location">We study periodic locational activity. This helps us estimate with a fair level of accuracy on your most visited locations. We use this as a signal for building your credit score.</string>
     <string name="permission_detail_contacts">We use read access to contacts to determine a list of people in your contact list. This helps us build a social graph by making use of the data you provided us. We will not use this information to contact your friends.</string>
     <string name="permission_detail_calendar">Having access to calendar events helps us determine the time of the day you are most busy. People who are busy during the day have different credit behaviour than people who are busy during the night. We use this as a signal for building your credit score.</string>
@@ -72,14 +72,91 @@
     <string name="permission_dismiss_dialog_negative_key">NO</string>
 
     <!--Liveness Detection-->
-    <string name="liveness_initial_instruction">Please keep your face centered inside\nthe perimeter. Start recording\nwhen you\'re ready</string>
+    <string name="liveness_initial_instruction">Position your face within the outline</string>
     <string name="video_capture_tooltip">Press the button when you\'re ready</string>
     <string name="preview">Preview</string>
     <string name="recording_done">Recording done!</string>
     <string name="you_can_now_preview_your_selfie">You can now preview \n your selfie.</string>
-    <string name="done">Done!</string>
-    <string name="uploading">Uploading</string>
+    <string name="done">Done</string>
+    <string name="processing">Processing</string>
     <string name="submit">Submit</string>
     <string name="retake">Retake</string>
-    <string name="your_document_has_been_successfully_uploaded">Your selfie has\nbeen successfully uploaded.</string>
+    <string name="your_document_has_been_successfully_uploaded">Your document has been\nsuccessfully uploaded.</string>
+    <string name="downloading_instructions">Downloading instructions…</string>
+    <string name="selfie_done_label">Selfie done!</string>
+    <string name="selfie_done_sub_label">Your selfie has been\nsuccessfully processed.</string>
+    <string name="selfie_instruction_back_cam">Position the face within the outline</string>
+    <string name="selfie_press_icon">Press the icon to take a photo</string>
+
+    <!--Liveness Actions-->
+    <string name="look_left" translatable="false">Turn your head to the left then\nback at the camera</string>
+    <string name="look_right" translatable="false">Turn your head to the right then\nback at the camera</string>
+    <string name="look_front" translatable="false">Look at the camera</string>
+    <string name="smile" translatable="false">Smile</string>
+    <string name="blink" translatable="false">Blink your eyes once</string>
+    <string name="show_id" translatable="false">Show your id to the camera</string>
+    <string name="read" translatable="false">Read the numbers out loud</string>
+
+    <string name="redo" translatable="false">Redo</string>
+    <string name="save" translatable="false">Save</string>
+
+    <!--Document Capture -->
+    <string name="position_your_card_into_the_frame">Position your card into the frame</string>
+    <string name="document_capture_done_label">Voila!</string>
+    <string name="document_capture_done_sub_label">Your document has been successfully uploaded.</string>
+    <string name="sign_here">Sign here</string>
+    <string name="add_another_page">+ Add another page</string>
+    <string name="document_submitted">Document submitted!</string>
+    <string name="the_document_has_been_successfully_processed">%s page of your %s has been successfully processed.</string>
+    <string name="the_document_has_been_successfully_processed_proof">Page %s of your %s has been successfully processed.</string>
+    <string name="upload_complete" translatable="false">Upload complete</string>
+    <string name="processing_image" translatable="false">Processing image, please wait&#8230;</string>
+
+    <!-- Strings related to barcode scanner -->
+    <string name="title_scan_qr_code">Scan QR Code</string>
+    <string name="qr_code_scanner_notes">Place the code in the center of the\nsquare to scan automatically</string>
+    <string name="ok" translatable="false">OK</string>
+    <string name="permission_camera_rationale" translatable="false">Access to the camera is needed for detection</string>
+    <string name="no_camera_permission" translatable="false">This application cannot run because it does not have the camera permission. The application can not proceed without this permission.</string>
+    <string name="low_storage_error" translatable="false">Face detector dependencies cannot be downloaded due to low device storage</string>
+
+    <!-- Supervised Journey -->
+    <string name="title_staff_login" translatable="false">Staff Login</string>
+    <string name="otp_caption_1a" translatable="false">We will send you a text message with the One Time Password to enter on the next screen</string>
+    <string name="otp_caption_1b" translatable="false">Enter your phone number</string>
+    <string name="otp_caption_2a" translatable="false">We sent you a One Time Password to your mobile ********%s</string>
+    <string name="otp_caption_2b" translatable="false">Enter the OTP to login</string>
+    <string name="send" translatable="false">Send</string>
+    <string name="login" translatable="false">Login</string>
+    <string name="otp_expires_in" translatable="false">OTP expires in %s</string>
+    <string name="resend_otp" translatable="false">Resend OTP</string>
+    <string name="error_otp_im_sorry_you_have_to_be_connected" translatable="false">I\'m sorry, you have to be connected to request an OTP.</string>
+    <string name="otp_verified" translatable="false">OTP Verified!</string>
+    <string name="each_time_you_logout" translatable="false">Each time you log out of the app, you will need to log in by entering a One Time Password again.</string>
+    <string name="is_the_image_clear">Is the image clear?</string>
+
+    <string name="global_position_document">Position the %s page of your %s in the frame</string>
+    <string name="global_position_document_proof">Position page %s of your %s in the frame</string>
+    <string name="global_upload_on_error">Internet Error. Please check your connection.</string>
+    <string name="global_upload_on_failure">Internet Failure. Please check your connection.</string>
+    <string name="global_upload_failed">Upload failed. Please try again.</string>
+    <string name="qr_scanner">QR Scanner</string>
+    <string name="confirm">Confirm</string>
+    <string name="are_you_sure_you_want_to_cancel">Are you sure you want to cancel?</string>
+
+    <string name="use_this_photo" translatable="false">Use this photo anyway</string>
+    <string name="retake_photo" translatable="false">Retake Photo</string>
+
+    <string name="error_blur" translatable="false">Your image may be blurry.</string>
+    <string name="error_bright" translatable="false">Your lighting might be too bright.</string>
+    <string name="error_color" translatable="false">There is a problem with your photo.</string>
+    <string name="error_cropped" translatable="false">You might not have captured the whole document.</string>
+    <string name="error_dark" translatable="false">Your lighting might be too dark.</string>
+    <string name="error_glare" translatable="false">Your photo might have some glare on it.</string>
+    <string name="something_is_wrong_with_your_photo" translatable="false">Sorry, Something is wrong with your photo! Please try again.</string>
+
+    <string name="wait" translatable="false">Please wait ...</string>
+
+    <string name="front" translatable="false">Front</string>
+    <string name="back" translatable="false">Back</string>
 </resources>

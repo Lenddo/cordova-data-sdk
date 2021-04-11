@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -9,18 +9,18 @@
     <FrameLayout
         android:id="@+id/frameLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <VideoView
             android:id="@+id/video_preview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:contentDescription="@string/preview"
-            android:scaleType="centerCrop"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:scaleType="centerCrop" />
 
     </FrameLayout>
 
@@ -32,7 +32,7 @@
         android:layout_marginTop="8dp"
         android:contentDescription="@string/preview"
         android:src="@drawable/play_video"
-        app:layout_constraintBottom_toTopOf="@id/layout_previewfooter"
+        app:layout_constraintBottom_toTopOf="@+id/layout_previewfooter"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@+id/frameLayout" />
@@ -40,8 +40,8 @@
     <LinearLayout
         android:id="@+id/layout_previewfooter"
         android:layout_width="match_parent"
-        android:layout_height="140dp"
-        android:background="@drawable/preview_gradient_header"
+        android:layout_height="160dp"
+        android:background="#ffffff"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -57,20 +57,30 @@
 
             <Button
                 android:id="@+id/btn_submit"
-                android:layout_width="180dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/rounded_rect_corner_button_transparent"
+                android:layout_marginLeft="14dp"
+                android:layout_marginTop="14dp"
+                android:layout_marginRight="14dp"
+                android:background="@drawable/selector_button_bg"
+                android:paddingTop="10dp"
+                android:paddingBottom="14dp"
                 android:text="@string/submit"
-                android:textAllCaps="true" />
+                android:textAllCaps="false" />
 
             <Button
                 android:id="@+id/btn_retake"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:background="#00000000"
+                android:layout_marginLeft="14dp"
+                android:layout_marginTop="14dp"
+                android:layout_marginRight="14dp"
+                android:layout_marginBottom="24dp"
+                android:background="@drawable/selector_button_bg"
+                android:paddingTop="10dp"
+                android:paddingBottom="14dp"
                 android:text="@string/retake"
-                android:textAllCaps="true" />
+                android:textAllCaps="false" />
 
         </LinearLayout>
 
@@ -90,35 +100,44 @@
                 android:layout_marginTop="32dp"
                 android:layout_marginBottom="24dp"
                 android:gravity="center"
-                android:text="@string/uploading"
+                android:text="@string/processing"
                 android:textAlignment="center"
-                android:textColor="#FFFFFFFF"
+                android:textColor="#0B5B82"
                 android:textSize="20sp" />
 
-            <ProgressBar
-                android:id="@+id/progressbar_upload"
-                style="@android:style/Widget.ProgressBar.Horizontal"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="10dp"
-                android:layout_gravity="center"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:layout_marginBottom="32dp" />
+                android:layout_height="30dp">
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp">
+
+                    <ProgressBar
+                        android:id="@+id/progressbar_upload"
+                        style="@android:style/Widget.ProgressBar.Horizontal"
+                        android:background="@drawable/edittext_rounded"
+                        android:layout_width="match_parent"
+                        android:layout_height="30dp"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="16dp" />
+
+                    <TextView
+                        android:id="@+id/tv_liveness_progress_percentage"
+                        android:layout_width="match_parent"
+                        android:layout_height="30dp"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:text="0%"
+                        android:textAlignment="center"
+                        android:textColor="@color/white"
+                        android:textStyle="bold" />
+
+                </FrameLayout>
+            </LinearLayout>
 
         </LinearLayout>
 
     </LinearLayout>
 
-    <!--<ImageView-->
-    <!--android:id="@+id/img_preview"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="match_parent"-->
-    <!--android:layout_marginBottom="140dp"-->
-    <!--android:contentDescription="@string/preview"-->
-    <!--android:scaleType="centerCrop"-->
-    <!--app:layout_constraintBottom_toBottomOf="parent"-->
-    <!--app:layout_constraintLeft_toLeftOf="parent"-->
-    <!--app:layout_constraintRight_toRightOf="parent"-->
-    <!--app:layout_constraintTop_toTopOf="parent" />-->
-
-</android.support.constraint.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

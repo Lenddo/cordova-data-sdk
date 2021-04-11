@@ -30,6 +30,7 @@
             android:textSize="28sp" />
 
         <TextView
+            android:id="@+id/tv_permission_intro"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
@@ -87,7 +88,8 @@
             android:minHeight="0dp"
             android:text="@string/cancel_allcaps"
             android:textColor="#FFFFFF"
-            android:textSize="22sp" />
+            android:textSize="22sp"
+            android:layout_marginRight="12dp"/>
 
         <Button
             android:id="@+id/btn_perm_intro_continue"

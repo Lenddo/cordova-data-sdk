@@ -31,9 +31,14 @@
         android:name="android.hardware.sensor.accelerometer"
         android:required="false" />
 
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
+
     <application
         android:allowBackup="true"
-        android:supportsRtl="true">
+        android:networkSecurityConfig="@xml/network_security_config"
+        android:supportsRtl="true"
+        android:largeHeap="true">
 
         <meta-data
             android:name="android.webkit.WebView.EnableSafeBrowsing"
@@ -45,14 +50,34 @@
             android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen" />
 
         <activity
-            android:name=".onboardingsdk.activities.PsychometricsIntroActivity"
-            android:label="@string/psychometrics_title"
+            android:name=".onboardingsdk.activities.LivenessActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity
-            android:name=".onboardingsdk.activities.LivenessActivity"
+            android:name=".onboardingsdk.activities.DocumentCaptureActivity"
+            android:configChanges="orientation|screenSize"
+            android:screenOrientation="landscape"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen" />
+        <activity
+            android:name=".onboardingsdk.activities.DocumentPreviewActivity"
+            android:configChanges="orientation|screenSize"
+            android:screenOrientation="landscape"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen" />
+        <activity
+            android:name=".onboardingsdk.activities.DocumentResultActivity"
+            android:configChanges="orientation|screenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.NoActionBar"/>
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
+            android:name=".onboardingsdk.activities.SignatureCaptureActivity"
+            android:configChanges="orientation|screenSize"
+            android:screenOrientation="landscape"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen" />
+        <activity
+            android:name=".onboardingsdk.activities.SelfieOnlyActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
     </application>
 
 </manifest>

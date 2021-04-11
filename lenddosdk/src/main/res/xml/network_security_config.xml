@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <domain-config>
+        <domain includeSubdomains="true">authorize-api.partner-service.link</domain>
+        <trust-anchors>
+            <certificates src="@raw/certdata_prod"/>
+        </trust-anchors>
+    </domain-config>
+    <domain-config>
+        <domain includeSubdomains="true">authorize-api.lendqa.com</domain>
+        <trust-anchors>
+            <certificates src="@raw/certdata_qa"/>
+        </trust-anchors>
+    </domain-config>
+    <domain-config>
+        <domain includeSubdomains="true">s3-ap-southeast-1.amazonaws.com</domain>
+        <trust-anchors>
+            <certificates src="@raw/certdata_aws" />
+        </trust-anchors>
+    </domain-config>
+</network-security-config>
